@@ -11,6 +11,7 @@ import {
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
 import MainBreadcrumb from './MainBreadcrumb';
+import SidebarMobile from './SidebarMobile';
 
 export default function Header() {
   return (
@@ -20,7 +21,7 @@ export default function Header() {
           <div className='flexStart gap-x-4'>
             <MenuSearch />
             <SearchMenuDialog />
-            {/* <SidebarMobile /> */}
+            <SidebarMobile />
           </div>
           <div className='flexEnd gap-x-4'>
             <DropdownMenu>
