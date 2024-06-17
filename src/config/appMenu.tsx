@@ -44,6 +44,11 @@ export const menus: TMenu[] = [
         label: 'Kelola Merek',
         href: '/kelola-merek',
       },
+      {
+        id: 3,
+        label: 'Kelola Rak',
+        href: '/kelola-rak',
+      },
     ],
   },
   {

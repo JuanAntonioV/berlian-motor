@@ -34,7 +34,7 @@ export default function EditCategoryModal({ data }: Props) {
     <EditModal
       open={open}
       setOpen={setOpen}
-      title='Tambah Kategori'
+      title='Ubah Kategori'
       name='kategori'
       form='editCategoryForm'
     >

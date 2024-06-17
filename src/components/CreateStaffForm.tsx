@@ -29,7 +29,6 @@ type Props = {
 
 export default function CreateStaffForm({ rolesList }: Props) {
   const [state, action] = useFormState(createStaffAction, { error: {} });
-  console.log('🚀 ~ CreateStaffForm ~ state:', state);
 
   const [previewImage, setPreviewImage] = useState<string | null>(null);
 

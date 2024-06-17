@@ -182,3 +182,44 @@ export const brandSchema = z.object({
     .min(1, 'Nama tidak boleh kosong')
     .max(255, 'Nama maksimal 255 karakter'),
 });
+
+export const shelfSchema = z.object({
+  image: z
+    .instanceof(File, {
+      message: 'Foto tidak valid',
+    })
+    .refine((data) => {
+      if (!data || data?.size === 0) return true;
+      return data.size < 5 * 1024 * 1024;
+    }, 'Ukuran foto maksimal 5MB')
+    .refine((data) => {
+      if (!data || data?.size === 0) return true;
+      const types = ['image/png', 'image/jpg', 'image/jpeg'];
+      return types.includes(data.type);
+    }, 'Foto harus berupa file gambar')
+    .optional()
+    .nullable(),
+  name: z
+    .string({
+      required_error: 'Nama wajib diisi',
+      invalid_type_error: 'Nama tidak valid',
+      message: 'Nama tidak valid',
+    })
+    .min(1, 'Nama tidak boleh kosong')
+    .max(255, 'Nama maksimal 255 karakter'),
+  description: z
+    .string({
+      required_error: 'Deskripsi wajib diisi',
+      invalid_type_error: 'Deskripsi tidak valid',
+      message: 'Deskripsi tidak valid',
+    })
+    .nullable(),
+  status: z
+    .boolean({
+      required_error: 'Status wajib diisi',
+      invalid_type_error: 'Status tidak valid',
+      message: 'Status tidak valid',
+    })
+    .optional()
+    .nullable(),
+});

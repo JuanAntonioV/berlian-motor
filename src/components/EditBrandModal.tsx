@@ -31,7 +31,7 @@ export default function EditBrandModal({ data }: Props) {
     <EditModal
       open={open}
       setOpen={setOpen}
-      title='Tambah Merek'
+      title='Ubah Merek'
       name='merek'
       form='editBrandForm'
     >
