@@ -67,13 +67,13 @@ export default function NavItem({ item, closeSidebar }: Props) {
             href={item.href}
             className={cn(
               'flex items-center p-3 text-white gap-x-3 hover:text-white group hover:bg-neutral-800 transition-colors rounded-lg',
-              pathname === item.href && 'text-white bg-neutral-800'
+              pathname.includes(item.href) && 'text-white bg-neutral-800'
             )}
           >
             <span
               className={cn(
                 'absolute w-1.5 h-8 bg-white rounded-r-full left-0 scale-y-0 transition-transform -translate-x-full group-hover:scale-y-100 group-hover:translate-x-0 ease-in-out',
-                pathname === item.href && 'scale-y-100 translate-x-0'
+                pathname.includes(item.href) && 'scale-y-100 translate-x-0'
               )}
             ></span>
             {item.icon}

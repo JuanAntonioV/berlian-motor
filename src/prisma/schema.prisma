@@ -1,0 +1,313 @@
+datasource db {
+    provider = "mysql"
+    url      = env("DATABASE_URL")
+}
+
+generator client {
+    provider = "prisma-client-js"
+}
+
+model User {
+    id            Int             @id @default(autoincrement())
+    name          String?
+    username      String?         @unique
+    email         String?         @unique
+    emailVerified DateTime?       @map("email_verified")
+    joinDate      DateTime?       @map("join_date")
+    password      String?
+    image         String?
+    Session       Session[]
+    Account       Account?
+    status        Boolean         @default(true)
+    // Optional for WebAuthn support
+    Authenticator Authenticator[]
+
+    createdAt DateTime @default(now()) @map("created_at")
+    updatedAt DateTime @updatedAt @map("updated_at")
+
+    Roles        UserRoles[]
+    GoodsReceipt GoodsReceipt[]
+
+    @@map("users")
+}
+
+model UserRoles {
+    userId Int
+    roleId Int
+
+    User User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+    Role Roles @relation(fields: [roleId], references: [id], onDelete: Cascade)
+
+    @@id([userId, roleId])
+    @@map("user_roles")
+}
+
+model Roles {
+    id        Int      @id @default(autoincrement())
+    name      String   @unique
+    status    Boolean  @default(true)
+    createdAt DateTime @default(now()) @map("created_at")
+    updatedAt DateTime @updatedAt @map("updated_at")
+
+    Users UserRoles[]
+
+    @@map("roles")
+}
+
+model Account {
+    id                       String  @id @default(cuid())
+    userId                   Int     @unique
+    type                     String
+    provider                 String
+    providerAccountId        String  @map("provider_account_id")
+    refresh_token            String? @db.Text
+    access_token             String? @db.Text
+    expires_at               Int?
+    token_type               String?
+    scope                    String?
+    id_token                 String? @db.Text
+    session_state            String?
+    refresh_token_expires_in Int?
+    user                     User?   @relation(fields: [userId], references: [id])
+
+    createdAt DateTime @default(now()) @map("created_at")
+    updatedAt DateTime @updatedAt @map("updated_at")
+
+    @@unique([provider, providerAccountId])
+    @@index([userId])
+    @@map("accounts")
+}
+
+model Session {
+    id           String   @id @default(cuid())
+    sessionToken String   @unique @map("session_token")
+    userId       Int      @map("user_id")
+    expires      DateTime
+    user         User     @relation(fields: [userId], references: [id])
+
+    createdAt DateTime @default(now()) @map("created_at")
+    updatedAt DateTime @updatedAt @map("updated_at")
+
+    @@index([userId])
+    @@map("sessions")
+}
+
+model VerificationToken {
+    identifier String
+    token      String
+    expires    DateTime
+
+    @@unique([identifier, token])
+    @@map("verification_tokens")
+}
+
+// Optional for WebAuthn support
+model Authenticator {
+    credentialID         String  @unique @map("credential_id")
+    userId               Int     @map("user_id")
+    providerAccountId    String  @map("provider_account_id")
+    credentialPublicKey  String  @map("credential_public_key")
+    counter              Int
+    credentialDeviceType String  @map("credential_device_type")
+    credentialBackedUp   Boolean @map("credential_backed_up")
+    transports           String?
+
+    user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    @@id([userId, credentialID])
+    @@map("authenticators")
+}
+
+model Brand {
+    id        Int      @id @default(autoincrement())
+    name      String   @unique
+    status    Boolean  @default(true)
+    createdAt DateTime @default(now()) @map("created_at")
+    updatedAt DateTime @updatedAt @map("updated_at")
+
+    Product Product[]
+
+    @@map("brands")
+}
+
+model Category {
+    id        Int      @id @default(autoincrement())
+    name      String   @unique
+    createdAt DateTime @default(now()) @map("created_at")
+    updatedAt DateTime @updatedAt @map("updated_at")
+
+    Product Product[]
+
+    @@map("categories")
+}
+
+model Shelf {
+    id          Int      @id @default(autoincrement())
+    name        String   @unique
+    description String?
+    image       String?
+    status      Boolean  @default(true)
+    createdAt   DateTime @default(now()) @map("created_at")
+    updatedAt   DateTime @updatedAt @map("updated_at")
+
+    Store        Store[]
+    Product      Product[]
+    ProductStock ProductStock[]
+
+    @@map("shelves")
+}
+
+model Store {
+    id          Int      @id @default(autoincrement())
+    name        String   @unique
+    description String?
+    status      Boolean  @default(true)
+    createdAt   DateTime @default(now()) @map("created_at")
+    updatedAt   DateTime @updatedAt @map("updated_at")
+
+    Shelf           Shelf[]
+    GoodsReceipt    GoodsReceipt[]
+    ProductStock    ProductStock[]
+    Transfer        Transfer[]        @relation("store")
+    TransferTo      Transfer[]        @relation("storeTo")
+    StockAdjustment StockAdjustment[]
+
+    @@map("stores")
+}
+
+model Product {
+    id          Int      @id @default(autoincrement())
+    brandId     Int      @map("brand_id")
+    name        String   @unique
+    sku         String   @unique
+    type        String
+    description String?
+    image       String?
+    price       Float
+    createdAt   DateTime @default(now()) @map("created_at")
+    updatedAt   DateTime @updatedAt @map("updated_at")
+
+    brand               Brand                 @relation(fields: [brandId], references: [id])
+    Category            Category[]
+    Shelf               Shelf[]
+    GoodsReceiptItem    GoodsReceiptItem[]
+    ProductStock        ProductStock[]
+    TransferItem        TransferItem[]
+    StockAdjustmentItem StockAdjustmentItem[]
+
+    @@map("products")
+}
+
+model ProductStock {
+    id        Int      @id @default(autoincrement())
+    productId Int      @map("product_id")
+    storeId   Int      @map("store_id")
+    shelfId   Int      @map("shelf_id")
+    quantity  Int
+    createdAt DateTime @default(now()) @map("created_at")
+    updatedAt DateTime @updatedAt @map("updated_at")
+
+    Product Product @relation(fields: [productId], references: [id])
+    Store   Store   @relation(fields: [storeId], references: [id])
+    Shelf   Shelf   @relation(fields: [shelfId], references: [id])
+
+    @@map("product_stocks")
+}
+
+model GoodsReceipt {
+    id            Int      @id @default(autoincrement())
+    invoiceNumber String   @unique @map("invoice_number")
+    userId        Int      @map("user_id")
+    storeId       Int      @map("store_id")
+    reference     String?
+    attachment    String?
+    notes         String?
+    createdAt     DateTime @default(now()) @map("created_at")
+    updatedAt     DateTime @updatedAt @map("updated_at")
+
+    User  User               @relation(fields: [userId], references: [id])
+    Store Store              @relation(fields: [storeId], references: [id])
+    Items GoodsReceiptItem[]
+
+    @@map("goods_receipts")
+}
+
+model GoodsReceiptItem {
+    id             Int      @id @default(autoincrement())
+    goodsReceiptId Int      @map("goods_receipt_id")
+    invoiceNumber  String   @unique @map("invoice_number")
+    productId      Int      @map("product_id")
+    quantity       Int
+    price          BigInt
+    createdAt      DateTime @default(now()) @map("created_at")
+    updatedAt      DateTime @updatedAt @map("updated_at")
+
+    Receipt GoodsReceipt @relation(fields: [goodsReceiptId], references: [id])
+    Product Product      @relation(fields: [productId], references: [id])
+
+    @@map("goods_receipt_items")
+}
+
+// transaksi transfer barang antar toko
+model Transfer {
+    id            Int      @id @default(autoincrement())
+    storeId       Int      @map("store_id")
+    storeToId     Int      @map("store_to_id")
+    invoiceNumber String   @unique @map("invoice_number")
+    reference     String?
+    attachment    String?
+    notes         String?
+    status        String
+    createdAt     DateTime @default(now()) @map("created_at")
+    updatedAt     DateTime @updatedAt @map("updated_at")
+
+    Store   Store @relation("store", fields: [storeId], references: [id], onDelete: Cascade)
+    StoreTo Store @relation("storeTo", fields: [storeToId], references: [id], onDelete: Cascade)
+
+    Items TransferItem[]
+}
+
+model TransferItem {
+    id         Int      @id @default(autoincrement())
+    transferId Int      @map("transfer_id")
+    productId  Int      @map("product_id")
+    quantity   Int
+    createdAt  DateTime @default(now()) @map("created_at")
+    updatedAt  DateTime @updatedAt @map("updated_at")
+
+    Transfer Transfer @relation(fields: [transferId], references: [id])
+    Product  Product  @relation(fields: [productId], references: [id])
+
+    @@map("transfer_items")
+}
+
+// penyesuaian stok barang
+model StockAdjustment {
+    id            Int      @id @default(autoincrement())
+    storeId       Int      @map("store_id")
+    invoiceNumber String   @unique @map("invoice_number")
+    reference     String?
+    attachment    String?
+    notes         String?
+    status        String
+    createdAt     DateTime @default(now()) @map("created_at")
+    updatedAt     DateTime @updatedAt @map("updated_at")
+
+    Store Store @relation(fields: [storeId], references: [id])
+
+    Items StockAdjustmentItem[]
+}
+
+model StockAdjustmentItem {
+    id                Int      @id @default(autoincrement())
+    stockAdjustmentId Int      @map("stock_adjustment_id")
+    productId         Int      @map("product_id")
+    quantity          Int
+    createdAt         DateTime @default(now()) @map("created_at")
+    updatedAt         DateTime @updatedAt @map("updated_at")
+
+    StockAdjustment StockAdjustment @relation(fields: [stockAdjustmentId], references: [id])
+    Product         Product         @relation(fields: [productId], references: [id])
+
+    @@map("stock_adjustment_items")
+}

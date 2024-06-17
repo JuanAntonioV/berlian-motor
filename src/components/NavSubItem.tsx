@@ -1,3 +1,5 @@
+'use client';
+
 import { cn } from '@/lib/utils';
 import { TSubMenus } from '@/types';
 import Link from 'next/link';

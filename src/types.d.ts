@@ -46,3 +46,14 @@ export type TType = {
   createdAt: string;
   updatedAt: string;
 };
+
+export type TSearchParamsData = {
+  page?: number;
+  skip?: number;
+  count?: number;
+  sort?: string;
+  order?: string;
+  search?: string;
+  from?: string;
+  to?: string;
+};

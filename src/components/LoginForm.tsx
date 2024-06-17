@@ -14,14 +14,25 @@ export default function LoginForm() {
     <Form action={action} id='loginForm'>
       <div className='form-group'>
         <Label htmlFor='email'>Alamat email</Label>
-        <Input id='email' placeholder='Alamat email' type='email' autoFocus />
+        <Input
+          id='email'
+          name='email'
+          placeholder='Alamat email'
+          type='email'
+          autoFocus
+        />
         {state?.error.email && (
           <div className='text-red-500 text-sm'>{state.error.email}</div>
         )}
       </div>
       <div className='form-group'>
         <Label htmlFor='password'>Kata sandi</Label>
-        <Input id='password' placeholder='Kata sandi' type='password' />
+        <Input
+          id='password'
+          name='password'
+          placeholder='Kata sandi'
+          type='password'
+        />
 
         {state?.error.password && (
           <div className='text-red-500 text-sm'>{state.error.password}</div>
