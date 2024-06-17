@@ -168,6 +168,17 @@ export const categorySchema = z.object({
       invalid_type_error: 'Nama tidak valid',
       message: 'Nama tidak valid',
     })
-    .min(1, 'Nama kategori tidak boleh kosong')
+    .min(1, 'Nama tidak boleh kosong')
+    .max(255, 'Nama maksimal 255 karakter'),
+});
+
+export const brandSchema = z.object({
+  name: z
+    .string({
+      required_error: 'Nama wajib diisi',
+      invalid_type_error: 'Nama tidak valid',
+      message: 'Nama tidak valid',
+    })
+    .min(1, 'Nama tidak boleh kosong')
     .max(255, 'Nama maksimal 255 karakter'),
 });

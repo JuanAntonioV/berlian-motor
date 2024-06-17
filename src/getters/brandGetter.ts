@@ -4,13 +4,9 @@ import db from '@/lib/db';
 import { ServerErrorException } from '@/lib/exceptions';
 import { TSearchParamsData } from '@/types';
 
-export async function getAllCategories({
-  params,
-}: {
-  params: TSearchParamsData;
-}) {
+export async function getAllBrands({ params }: { params: TSearchParamsData }) {
   try {
-    const categories = await db.category.findMany({
+    const brands = await db.brand.findMany({
       take: parseInt(String(params.count)),
       skip: parseInt(String(params.skip)),
       where: {
@@ -31,7 +27,7 @@ export async function getAllCategories({
           },
     });
 
-    const total = await db.category.count({
+    const total = await db.brand.count({
       where: {
         OR: [
           {
@@ -44,7 +40,7 @@ export async function getAllCategories({
     });
 
     return {
-      data: categories,
+      data: brands,
       total,
       per_page: params.count,
     };
@@ -54,10 +50,10 @@ export async function getAllCategories({
   }
 }
 
-export async function getCategoriesList() {
+export async function getBrandsList() {
   try {
-    const categories = await db.category.findMany();
-    return categories;
+    const brands = await db.brand.findMany();
+    return brands;
   } catch (err: any) {
     console.error(err);
     throw new ServerErrorException(err.message);
