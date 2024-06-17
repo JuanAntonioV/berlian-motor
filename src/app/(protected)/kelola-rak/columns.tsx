@@ -8,9 +8,9 @@ import { Prisma } from '@prisma/client';
 import { createColumnHelper } from '@tanstack/react-table';
 import { format } from 'date-fns';
 
-type ShelfWithRoles = Prisma.ShelfGetPayload<{}>;
+type Shelf = Prisma.ShelfGetPayload<{}>;
 
-const columnHelper = createColumnHelper<ShelfWithRoles>();
+const columnHelper = createColumnHelper<Shelf>();
 
 export const shelfColumns = [
   columnHelper.accessor('id', {

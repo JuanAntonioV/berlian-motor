@@ -11,6 +11,12 @@ export const metadata: Metadata = {
     'Aplikasi manajemen persediaan barang pada bengkel Berlian Motor',
 };
 
+// @ts-ignore
+BigInt.prototype.toJSON = function () {
+  const int = Number.parseInt(this.toString());
+  return int ?? this.toString();
+};
+
 export default function RootLayout({
   children,
 }: Readonly<{

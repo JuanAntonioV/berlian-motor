@@ -18,3 +18,10 @@ export function getSearchParams(searchParams: TSearchParamsData) {
 
   return { page, count, sort, order, search, from, to, skip };
 }
+
+export const json = (param: any): any => {
+  return JSON.stringify(
+    param,
+    (key, value) => (typeof value === 'bigint' ? value.toString() : value) // return everything else unchanged
+  );
+};

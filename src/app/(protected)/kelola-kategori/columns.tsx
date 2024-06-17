@@ -10,9 +10,9 @@ import { format } from 'date-fns';
 import Link from 'next/link';
 import { MdEdit } from 'react-icons/md';
 
-type CategoryWithRoles = Prisma.CategoryGetPayload<{}>;
+type Category = Prisma.CategoryGetPayload<{}>;
 
-const columnHelper = createColumnHelper<CategoryWithRoles>();
+const columnHelper = createColumnHelper<Category>();
 
 export const categoryColumns = [
   columnHelper.accessor('id', {

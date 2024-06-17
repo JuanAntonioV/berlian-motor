@@ -7,9 +7,9 @@ import { Prisma } from '@prisma/client';
 import { createColumnHelper } from '@tanstack/react-table';
 import { format } from 'date-fns';
 
-type BrandWithRoles = Prisma.BrandGetPayload<{}>;
+type Brand = Prisma.BrandGetPayload<{}>;
 
-const columnHelper = createColumnHelper<BrandWithRoles>();
+const columnHelper = createColumnHelper<Brand>();
 
 export const brandColumns = [
   columnHelper.accessor('id', {

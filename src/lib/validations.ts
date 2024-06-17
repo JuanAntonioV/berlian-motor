@@ -223,3 +223,88 @@ export const shelfSchema = z.object({
     .optional()
     .nullable(),
 });
+
+export const productSchema = z.object({
+  image: z
+    .instanceof(File, {
+      message: 'Foto tidak valid',
+    })
+    .refine((data) => {
+      if (!data || data?.size === 0) return true;
+      return data.size < 5 * 1024 * 1024;
+    }, 'Ukuran foto maksimal 5MB')
+    .refine((data) => {
+      if (!data || data?.size === 0) return true;
+      const types = ['image/png', 'image/jpg', 'image/jpeg'];
+      return types.includes(data.type);
+    }, 'Foto harus berupa file gambar')
+    .optional()
+    .nullable(),
+  name: z
+    .string({
+      required_error: 'Nama wajib diisi',
+      invalid_type_error: 'Nama tidak valid',
+      message: 'Nama tidak valid',
+    })
+    .min(1, 'Nama tidak boleh kosong')
+    .max(255, 'Nama maksimal 255 karakter'),
+  description: z
+    .string({
+      required_error: 'Deskripsi wajib diisi',
+      invalid_type_error: 'Deskripsi tidak valid',
+      message: 'Deskripsi tidak valid',
+    })
+    .nullable(),
+  sku: z
+    .string({
+      required_error: 'Kode SKU wajib diisi',
+      invalid_type_error: 'Kode SKU tidak valid',
+      message: 'Kode SKU tidak valid',
+    })
+    .optional()
+    .nullable(),
+  type: z
+    .string({
+      required_error: 'Tipe wajib diisi',
+      invalid_type_error: 'Tipe tidak valid',
+      message: 'Tipe tidak valid',
+    })
+    .nullable(),
+  categories: z
+    .string({
+      required_error: 'Kategori wajib diisi',
+      invalid_type_error: 'Kategori tidak valid',
+      message: 'Kategori tidak valid',
+    })
+    .nullable(),
+  brand: z.string({
+    required_error: 'Brand wajib diisi',
+    invalid_type_error: 'Brand tidak valid',
+    message: 'Brand tidak valid',
+  }),
+  salePrice: z.number({
+    required_error: 'Harga jual wajib diisi',
+    invalid_type_error: 'Harga jual tidak valid',
+    message: 'Harga jual tidak valid',
+  }),
+  supplierPrice: z.number({
+    required_error: 'Harga beli wajib diisi',
+    invalid_type_error: 'Harga beli tidak valid',
+    message: 'Harga beli tidak valid',
+  }),
+  wholesalePrice: z.number({
+    required_error: 'Harga grosir wajib diisi',
+    invalid_type_error: 'Harga grosir tidak valid',
+    message: 'Harga grosir tidak valid',
+  }),
+  retailPrice: z.number({
+    required_error: 'Harga retail wajib diisi',
+    invalid_type_error: 'Harga retail tidak valid',
+    message: 'Harga retail tidak valid',
+  }),
+  workshopPrice: z.number({
+    required_error: 'Harga bengkel wajib diisi',
+    invalid_type_error: 'Harga bengkel tidak valid',
+    message: 'Harga bengkel tidak valid',
+  }),
+});

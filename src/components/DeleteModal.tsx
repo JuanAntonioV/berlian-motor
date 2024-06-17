@@ -52,6 +52,12 @@ export default function DeleteModal({
         router.push(navigateTo);
       }
     }
+
+    // @ts-ignore
+    if (state?.error?.message) {
+      // @ts-ignore
+      toast.error(state?.error?.message as string);
+    }
   }, [state]);
 
   return (

@@ -176,24 +176,28 @@ model Store {
 }
 
 model Product {
-    id          Int      @id @default(autoincrement())
-    brandId     Int      @map("brand_id")
-    name        String   @unique
-    sku         String   @unique
-    type        String
-    description String?
-    image       String?
-    price       Float
-    createdAt   DateTime @default(now()) @map("created_at")
-    updatedAt   DateTime @updatedAt @map("updated_at")
+    id             Int      @id @default(autoincrement())
+    brandId        Int      @map("brand_id")
+    name           String   @unique
+    sku            String   @unique
+    type           String
+    description    String?
+    image          String?
+    salePrice      BigInt   @map("sale_price")
+    supplierPrice  BigInt   @map("supplier_price")
+    wholesalePrice BigInt   @map("wholesale_price")
+    retailPrice    BigInt   @map("retail_price")
+    workshopPrice  BigInt   @map("workshop_price")
+    createdAt      DateTime @default(now()) @map("created_at")
+    updatedAt      DateTime @updatedAt @map("updated_at")
 
-    brand               Brand                 @relation(fields: [brandId], references: [id])
-    Category            Category[]
-    Shelf               Shelf[]
-    GoodsReceiptItem    GoodsReceiptItem[]
-    ProductStock        ProductStock[]
-    TransferItem        TransferItem[]
-    StockAdjustmentItem StockAdjustmentItem[]
+    Brand           Brand             @relation(fields: [brandId], references: [id])
+    Category        Category[]
+    Shelf           Shelf[]
+    ProductStock    ProductStock[]
+    GoodsReceipt    GoodsReceipt[]
+    Transfer        Transfer[]
+    StockAdjustment StockAdjustment[]
 
     @@map("products")
 }
@@ -219,40 +223,28 @@ model GoodsReceipt {
     invoiceNumber String   @unique @map("invoice_number")
     userId        Int      @map("user_id")
     storeId       Int      @map("store_id")
+    productId     Int      @map("product_id")
+    quantity      Int
+    supplier      String
     reference     String?
     attachment    String?
     notes         String?
     createdAt     DateTime @default(now()) @map("created_at")
     updatedAt     DateTime @updatedAt @map("updated_at")
 
-    User  User               @relation(fields: [userId], references: [id])
-    Store Store              @relation(fields: [storeId], references: [id])
-    Items GoodsReceiptItem[]
+    User    User    @relation(fields: [userId], references: [id])
+    Store   Store   @relation(fields: [storeId], references: [id])
+    Product Product @relation(fields: [productId], references: [id])
 
     @@map("goods_receipts")
 }
 
-model GoodsReceiptItem {
-    id             Int      @id @default(autoincrement())
-    goodsReceiptId Int      @map("goods_receipt_id")
-    invoiceNumber  String   @unique @map("invoice_number")
-    productId      Int      @map("product_id")
-    quantity       Int
-    price          BigInt
-    createdAt      DateTime @default(now()) @map("created_at")
-    updatedAt      DateTime @updatedAt @map("updated_at")
-
-    Receipt GoodsReceipt @relation(fields: [goodsReceiptId], references: [id])
-    Product Product      @relation(fields: [productId], references: [id])
-
-    @@map("goods_receipt_items")
-}
-
-// transaksi transfer barang antar toko
 model Transfer {
     id            Int      @id @default(autoincrement())
     storeId       Int      @map("store_id")
     storeToId     Int      @map("store_to_id")
+    productId     Int      @map("product_id")
+    quantity      Int
     invoiceNumber String   @unique @map("invoice_number")
     reference     String?
     attachment    String?
@@ -261,53 +253,25 @@ model Transfer {
     createdAt     DateTime @default(now()) @map("created_at")
     updatedAt     DateTime @updatedAt @map("updated_at")
 
-    Store   Store @relation("store", fields: [storeId], references: [id], onDelete: Cascade)
-    StoreTo Store @relation("storeTo", fields: [storeToId], references: [id], onDelete: Cascade)
-
-    Items TransferItem[]
+    Store   Store   @relation("store", fields: [storeId], references: [id], onDelete: Cascade)
+    StoreTo Store   @relation("storeTo", fields: [storeToId], references: [id], onDelete: Cascade)
+    Product Product @relation(fields: [productId], references: [id])
 }
 
-model TransferItem {
-    id         Int      @id @default(autoincrement())
-    transferId Int      @map("transfer_id")
-    productId  Int      @map("product_id")
-    quantity   Int
-    createdAt  DateTime @default(now()) @map("created_at")
-    updatedAt  DateTime @updatedAt @map("updated_at")
-
-    Transfer Transfer @relation(fields: [transferId], references: [id])
-    Product  Product  @relation(fields: [productId], references: [id])
-
-    @@map("transfer_items")
-}
-
-// penyesuaian stok barang
 model StockAdjustment {
-    id            Int      @id @default(autoincrement())
-    storeId       Int      @map("store_id")
-    invoiceNumber String   @unique @map("invoice_number")
-    reference     String?
-    attachment    String?
-    notes         String?
-    status        String
-    createdAt     DateTime @default(now()) @map("created_at")
-    updatedAt     DateTime @updatedAt @map("updated_at")
+    id             Int      @id @default(autoincrement())
+    storeId        Int      @map("store_id")
+    invoiceNumber  String   @unique @map("invoice_number")
+    productId      Int      @map("product_id")
+    quantityBefore Int      @map("quantity_before")
+    quantity       Int
+    reference      String?
+    attachment     String?
+    notes          String?
+    status         String
+    createdAt      DateTime @default(now()) @map("created_at")
+    updatedAt      DateTime @updatedAt @map("updated_at")
 
-    Store Store @relation(fields: [storeId], references: [id])
-
-    Items StockAdjustmentItem[]
-}
-
-model StockAdjustmentItem {
-    id                Int      @id @default(autoincrement())
-    stockAdjustmentId Int      @map("stock_adjustment_id")
-    productId         Int      @map("product_id")
-    quantity          Int
-    createdAt         DateTime @default(now()) @map("created_at")
-    updatedAt         DateTime @updatedAt @map("updated_at")
-
-    StockAdjustment StockAdjustment @relation(fields: [stockAdjustmentId], references: [id])
-    Product         Product         @relation(fields: [productId], references: [id])
-
-    @@map("stock_adjustment_items")
+    Store   Store   @relation(fields: [storeId], references: [id])
+    Product Product @relation(fields: [productId], references: [id])
 }
