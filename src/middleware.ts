@@ -23,15 +23,15 @@ async function middleware(req: any) {
   const user = auth?.user;
 
   const isProtectedRoute = protectedRoutes.some((prefix) =>
-    req.nextUrl.pathname.startsWith(prefix)
+    nextUrl.pathname.startsWith(prefix)
   );
 
   if (!user && isProtectedRoute) {
-    const absoluteURL = new URL('/auth/login', req.nextUrl.origin);
+    const absoluteURL = new URL('/auth/login', nextUrl.origin);
     return NextResponse.rewrite(absoluteURL.toString());
   }
-  if (user && unprotectedRoutes.includes(req.nextUrl.pathname)) {
-    const absoluteURL = new URL('/dashboard', req.nextUrl.origin);
+  if (user && unprotectedRoutes.includes(nextUrl.pathname)) {
+    const absoluteURL = new URL('/dashboard', nextUrl.origin);
     return NextResponse.redirect(absoluteURL.toString());
   }
 

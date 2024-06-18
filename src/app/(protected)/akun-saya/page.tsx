@@ -1,12 +1,16 @@
 import ChangePasswordForm from '@/components/ChangePasswordForm';
+import ChangeProfileForm from '@/components/ChangeProfileForm';
 import PageTitle from '@/components/PageTitle';
 import Section from '@/components/Section';
 import SectionHeader from '@/components/SectionHeader';
+import { getRoleList } from '@/getters/rolesGetter';
 import { auth } from '@/lib/auth';
 
 export default async function ProfilePage() {
   const session = await auth();
   const user = session?.user;
+
+  const rolesList = await getRoleList();
 
   return (
     <div>
@@ -25,6 +29,8 @@ export default async function ProfilePage() {
               </p>
             </div>
           </SectionHeader>
+
+          {user && <ChangeProfileForm user={user} rolesList={rolesList} />}
         </Section>
         <Section>
           <SectionHeader>

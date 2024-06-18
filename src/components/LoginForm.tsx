@@ -8,11 +8,20 @@ import SubmitButton from './SubmitButtom';
 import Form from './Form';
 import { useEffect } from 'react';
 import toast from 'react-hot-toast';
+import { useRouter } from 'next/navigation';
+import { useSession } from 'next-auth/react';
 
 export default function LoginForm() {
   const [state, action] = useFormState(loginAction, { error: {} });
+  const router = useRouter();
+  const { status, update } = useSession();
 
   useEffect(() => {
+    if (state.success) {
+      toast.success('Berhasil masuk');
+      router.push('/dashboard');
+    }
+
     // @ts-ignore
     if (state?.error?.message) {
       // @ts-ignore

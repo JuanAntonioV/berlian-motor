@@ -337,3 +337,38 @@ export const productSchema = z.object({
     message: 'Harga bengkel tidak valid',
   }),
 });
+
+export const changeProfileSchema = z.object({
+  image: z
+    .instanceof(File, {
+      message: 'Foto tidak valid',
+    })
+    .refine((data) => {
+      if (!data || data?.size === 0) return true;
+      return data.size < 5 * 1024 * 1024;
+    }, 'Ukuran foto maksimal 5MB')
+    .refine((data) => {
+      if (!data || data?.size === 0) return true;
+      const types = ['image/png', 'image/jpg', 'image/jpeg'];
+      return types.includes(data.type);
+    }, 'Foto harus berupa file gambar')
+    .optional()
+    .nullable(),
+  name: z
+    .string({
+      required_error: 'Nama wajib diisi',
+      invalid_type_error: 'Nama tidak valid',
+      message: 'Nama tidak valid',
+    })
+    .min(1, 'Nama wajib diisi')
+    .max(255, 'Nama maksimal 255 karakter'),
+  email: z
+    .string({
+      required_error: 'Email wajib diisi',
+      invalid_type_error: 'Email tidak valid',
+      message: 'Email tidak valid',
+    })
+    .email('Email tidak valid')
+    .min(1, 'Email wajib diisi')
+    .max(45, 'Email maksimal 45 karakter'),
+});

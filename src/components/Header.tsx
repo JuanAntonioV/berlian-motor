@@ -1,7 +1,7 @@
 import { profileMenus } from '@/config/appMenu';
 import MenuSearch from './MenuSearch';
 import SearchMenuDialog from './SearchMenuDialog';
-import { Avatar, AvatarFallback } from './ui/avatar';
+import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -12,10 +12,13 @@ import Link from 'next/link';
 import { cn } from '@/lib/utils';
 import MainBreadcrumb from './MainBreadcrumb';
 import SidebarMobile from './SidebarMobile';
-import { signOut } from '@/lib/auth';
+import { auth } from '@/lib/auth';
 import SignOutButton from './SignOutButton';
 
-export default function Header() {
+export default async function Header() {
+  const session = await auth();
+  const user = session?.user;
+
   return (
     <header className='w-full bg-white border-b border-b-gray-200'>
       <div className='px-4 md:px-10 h-20 flexCenter'>
@@ -29,8 +32,11 @@ export default function Header() {
             <DropdownMenu>
               <DropdownMenuTrigger>
                 <Avatar className='w-12 h-12'>
-                  {/* <AvatarImage src='https://github.com/shadcn.png' /> */}
-                  <AvatarFallback>AD</AvatarFallback>
+                  {user?.image ? (
+                    <AvatarImage src={user.image} />
+                  ) : (
+                    <AvatarFallback>BM</AvatarFallback>
+                  )}
                 </Avatar>
               </DropdownMenuTrigger>
               <DropdownMenuContent align='end' className='w-44'>

@@ -14,7 +14,6 @@ export default function ChangePasswordForm({ id }: { id?: number }) {
     error: {},
     success: undefined,
   });
-  console.log('🚀 ~ ChangePasswordForm ~ state:', state);
 
   useEffect(() => {
     if (state.success) {
