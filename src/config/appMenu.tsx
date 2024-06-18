@@ -1,10 +1,9 @@
 import { TMenu } from '@/types';
 import { FaUsers } from 'react-icons/fa';
-import { FaBoxesStacked } from 'react-icons/fa6';
 import { HiShoppingBag } from 'react-icons/hi';
 import { LuUser2 } from 'react-icons/lu';
-import { MdDiscount, MdLogout, MdSpaceDashboard } from 'react-icons/md';
-import { RiInboxArchiveFill } from 'react-icons/ri';
+import { MdLogout, MdSpaceDashboard } from 'react-icons/md';
+import { RiFolderSettingsFill, RiInboxArchiveFill } from 'react-icons/ri';
 
 export const menus: TMenu[] = [
   {
@@ -32,7 +31,7 @@ export const menus: TMenu[] = [
     id: 4,
     label: 'Manajemen',
     href: '/',
-    icon: <RiInboxArchiveFill size={24} />,
+    icon: <RiFolderSettingsFill size={24} />,
     subMenus: [
       {
         id: 1,

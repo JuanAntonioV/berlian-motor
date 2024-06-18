@@ -161,6 +161,35 @@ export const changeStaffPasswordSchema = z
     path: ['confirmPassword'],
   });
 
+export const changePasswordSchema = z
+  .object({
+    oldPassword: z
+      .string({
+        required_error: 'Kata sandi lama wajib diisi',
+        invalid_type_error: 'Kata sandi lama tidak valid',
+        message: 'Kata sandi lama tidak valid',
+      })
+      .min(6, 'Kata sandi lama minimal 6 karakter')
+      .max(45, 'Kata sandi lama maksimal 45 karakter'),
+    password: z
+      .string({
+        required_error: 'Kata sandi baru wajib diisi',
+        invalid_type_error: 'Kata sandi baru tidak valid',
+        message: 'Kata sandi baru tidak valid',
+      })
+      .min(6, 'Kata sandi baru minimal 6 karakter')
+      .max(45, 'Kata sandi baru maksimal 45 karakter'),
+    confirmPassword: z.string({
+      required_error: 'Konfirmasi kata sandi wajib diisi',
+      invalid_type_error: 'Konfirmasi kata sandi tidak valid',
+      message: 'Konfirmasi kata sandi tidak valid',
+    }),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: 'Konfirmasi kata sandi tidak sama',
+    path: ['confirmPassword'],
+  });
+
 export const categorySchema = z.object({
   name: z
     .string({
