@@ -10,7 +10,7 @@ import path from 'path';
 import fs from 'fs/promises';
 import { redirect } from 'next/navigation';
 import { revalidatePath } from 'next/cache';
-import { hash } from 'bcrypt';
+import { hash } from 'bcryptjs';
 import { ServerErrorException } from '@/lib/exceptions';
 
 export async function createStaffAction(prevState: any, formData: FormData) {

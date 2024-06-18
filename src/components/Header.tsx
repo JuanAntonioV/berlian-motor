@@ -12,6 +12,8 @@ import Link from 'next/link';
 import { cn } from '@/lib/utils';
 import MainBreadcrumb from './MainBreadcrumb';
 import SidebarMobile from './SidebarMobile';
+import { signOut } from '@/lib/auth';
+import SignOutButton from './SignOutButton';
 
 export default function Header() {
   return (
@@ -34,16 +36,19 @@ export default function Header() {
               <DropdownMenuContent align='end' className='w-44'>
                 {profileMenus.map((menu) => (
                   <DropdownMenuItem key={menu.href}>
-                    <Link
-                      href={menu.href}
-                      className={cn(
-                        'flex items-center gap-x-3 w-full p-1 rounded-lg',
-                        menu.label === 'Keluar' && 'text-destructive'
-                      )}
-                    >
-                      {menu.icon}
-                      {menu.label}
-                    </Link>
+                    {menu.label === 'Keluar' ? (
+                      <SignOutButton />
+                    ) : (
+                      <Link
+                        href={menu.href}
+                        className={cn(
+                          'flex items-center gap-x-3 w-full p-1 rounded-lg'
+                        )}
+                      >
+                        {menu.icon}
+                        {menu.label}
+                      </Link>
+                    )}
                   </DropdownMenuItem>
                 ))}
               </DropdownMenuContent>

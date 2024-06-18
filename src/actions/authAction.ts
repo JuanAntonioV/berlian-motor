@@ -1,5 +1,6 @@
 'use server';
 
+import { signIn, signOut } from '@/lib/auth';
 import { loginSchema } from '@/lib/validations';
 import { redirect } from 'next/navigation';
 
@@ -15,5 +16,17 @@ export async function loginAction(prevState: any, formData: FormData) {
     return { error: validate.error.flatten().fieldErrors };
   }
 
-  redirect('/dashboard');
+  await signIn('credentials', {
+    email,
+    password,
+    redirect: true,
+    redirectTo: '/dashboard',
+  });
+}
+
+export async function logoutAction(formData: FormData) {
+  await signOut({
+    redirect: true,
+    redirectTo: '/auth/login',
+  });
 }

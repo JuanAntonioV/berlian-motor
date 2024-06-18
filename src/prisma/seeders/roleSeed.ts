@@ -1,6 +1,4 @@
 import type { Prisma, PrismaClient } from '@prisma/client';
-import { hash } from 'bcrypt';
-import { format } from 'date-fns';
 
 export async function roleSeed(prisma: PrismaClient) {
   const roles: Prisma.RolesCreateInput[] = [

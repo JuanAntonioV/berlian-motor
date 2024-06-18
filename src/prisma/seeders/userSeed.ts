@@ -1,5 +1,5 @@
 import type { Prisma, PrismaClient, User } from '@prisma/client';
-import { hash } from 'bcrypt';
+import { hash } from 'bcryptjs';
 import { format } from 'date-fns';
 
 export async function userSeed(prisma: PrismaClient) {

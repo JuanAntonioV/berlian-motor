@@ -6,9 +6,19 @@ import { Label } from '@/components/ui/label';
 import { useFormState } from 'react-dom';
 import SubmitButton from './SubmitButtom';
 import Form from './Form';
+import { useEffect } from 'react';
+import toast from 'react-hot-toast';
 
 export default function LoginForm() {
   const [state, action] = useFormState(loginAction, { error: {} });
+
+  useEffect(() => {
+    // @ts-ignore
+    if (state?.error?.message) {
+      // @ts-ignore
+      toast.error(state.error.message);
+    }
+  }, [state]);
 
   return (
     <Form action={action} id='loginForm'>
@@ -21,8 +31,8 @@ export default function LoginForm() {
           type='email'
           autoFocus
         />
-        {state?.error.email && (
-          <div className='text-red-500 text-sm'>{state.error.email}</div>
+        {state?.error?.email && (
+          <div className='text-red-500 text-sm'>{state.error?.email}</div>
         )}
       </div>
       <div className='form-group'>
@@ -34,8 +44,8 @@ export default function LoginForm() {
           type='password'
         />
 
-        {state?.error.password && (
-          <div className='text-red-500 text-sm'>{state.error.password}</div>
+        {state?.error?.password && (
+          <div className='text-red-500 text-sm'>{state.error?.password}</div>
         )}
       </div>
 
