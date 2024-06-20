@@ -1,6 +1,4 @@
-'use client';
-
-import { GoodsReceipt, Prisma } from '@prisma/client';
+import { Prisma } from '@prisma/client';
 import { Button } from './ui/button';
 import Link from 'next/link';
 import { MdKeyboardBackspace } from 'react-icons/md';
@@ -18,10 +16,11 @@ import {
 import { HiOutlinePrinter } from 'react-icons/hi';
 
 type Props = {
-  data: Prisma.GoodsReceiptGetPayload<{
+  data: Prisma.ReductionOfGoodsGetPayload<{
     include: {
       Store: true;
       User: true;
+      Shelf: true;
       Product: {
         include: {
           Category: true;
@@ -33,7 +32,7 @@ type Props = {
   }>;
 };
 
-export default function ViewReceiptDetail({ data }: Props) {
+export default function ViewReductionOfGoodsDetail({ data }: Props) {
   const onDownloadAttachment = () => {
     const baseUrl = 'http://' + window.location.host;
     const link = document.createElement('a');
@@ -103,8 +102,8 @@ export default function ViewReceiptDetail({ data }: Props) {
           <CardCollapsable title='Detail Pemasok'>
             <div className='flexBetween gap-4'>
               <div className='py-2 space-y-2'>
-                <p className='text-sm text-gray-500'>Pemasok</p>
-                <p className='font-bold'>{data.supplier || '-'}</p>
+                <p className='text-sm text-gray-500'>Nama Rak</p>
+                <p className='font-bold'>{data.Shelf.name || '-'}</p>
               </div>
             </div>
           </CardCollapsable>

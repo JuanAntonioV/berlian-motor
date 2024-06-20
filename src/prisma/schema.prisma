@@ -25,8 +25,9 @@ model User {
     createdAt DateTime @default(now()) @map("created_at")
     updatedAt DateTime @updatedAt @map("updated_at")
 
-    Roles        UserRoles[]
-    GoodsReceipt GoodsReceipt[]
+    Roles            UserRoles[]
+    GoodsReceipt     GoodsReceipt[]
+    ReductionOfGoods ReductionOfGoods[]
 
     @@map("users")
 }
@@ -154,6 +155,12 @@ model Shelf {
     Product      Product[]
     ProductStock ProductStock[]
 
+    Transfer   Transfer[] @relation("shelf")
+    TransferTo Transfer[] @relation("shelfTo")
+
+    ReductionOfGoods ReductionOfGoods[]
+    StockAdjustment  StockAdjustment[]
+
     @@map("shelves")
 }
 
@@ -165,12 +172,11 @@ model Store {
     createdAt   DateTime @default(now()) @map("created_at")
     updatedAt   DateTime @updatedAt @map("updated_at")
 
-    Shelf           Shelf[]
-    GoodsReceipt    GoodsReceipt[]
-    ProductStock    ProductStock[]
-    Transfer        Transfer[]        @relation("store")
-    TransferTo      Transfer[]        @relation("storeTo")
-    StockAdjustment StockAdjustment[]
+    Shelf            Shelf[]
+    GoodsReceipt     GoodsReceipt[]
+    ProductStock     ProductStock[]
+    StockAdjustment  StockAdjustment[]
+    ReductionOfGoods ReductionOfGoods[]
 
     @@map("stores")
 }
@@ -191,13 +197,14 @@ model Product {
     createdAt      DateTime @default(now()) @map("created_at")
     updatedAt      DateTime @updatedAt @map("updated_at")
 
-    Brand           Brand             @relation(fields: [brandId], references: [id])
-    Category        Category[]
-    Shelf           Shelf[]
-    ProductStock    ProductStock[]
-    GoodsReceipt    GoodsReceipt[]
-    Transfer        Transfer[]
-    StockAdjustment StockAdjustment[]
+    Brand            Brand              @relation(fields: [brandId], references: [id])
+    Category         Category[]
+    Shelf            Shelf[]
+    ProductStock     ProductStock[]
+    GoodsReceipt     GoodsReceipt[]
+    Transfer         Transfer[]
+    StockAdjustment  StockAdjustment[]
+    ReductionOfGoods ReductionOfGoods[]
 
     @@map("products")
 }
@@ -239,10 +246,30 @@ model GoodsReceipt {
     @@map("goods_receipts")
 }
 
+model ReductionOfGoods {
+    id            Int      @id @default(autoincrement())
+    invoiceNumber String   @unique @map("invoice_number")
+    userId        Int      @map("user_id")
+    storeId       Int      @map("store_id")
+    shelfId       Int      @map("shelf_id")
+    productId     Int      @map("product_id")
+    quantity      Int
+    reference     String?
+    attachment    String?
+    notes         String?
+    createdAt     DateTime @default(now()) @map("created_at")
+    updatedAt     DateTime @updatedAt @map("updated_at")
+
+    User    User    @relation(fields: [userId], references: [id])
+    Shelf   Shelf   @relation(fields: [shelfId], references: [id])
+    Store   Store   @relation(fields: [storeId], references: [id])
+    Product Product @relation(fields: [productId], references: [id])
+}
+
 model Transfer {
     id            Int      @id @default(autoincrement())
-    storeId       Int      @map("store_id")
-    storeToId     Int      @map("store_to_id")
+    shelfId       Int      @map("shelf_id")
+    shelfToId     Int      @map("shelf_to_id")
     productId     Int      @map("product_id")
     quantity      Int
     invoiceNumber String   @unique @map("invoice_number")
@@ -253,14 +280,15 @@ model Transfer {
     createdAt     DateTime @default(now()) @map("created_at")
     updatedAt     DateTime @updatedAt @map("updated_at")
 
-    Store   Store   @relation("store", fields: [storeId], references: [id], onDelete: Cascade)
-    StoreTo Store   @relation("storeTo", fields: [storeToId], references: [id], onDelete: Cascade)
+    Shelf   Shelf   @relation("shelf", fields: [shelfId], references: [id])
+    ShelfTo Shelf   @relation("shelfTo", fields: [shelfToId], references: [id])
     Product Product @relation(fields: [productId], references: [id])
 }
 
 model StockAdjustment {
     id             Int      @id @default(autoincrement())
     storeId        Int      @map("store_id")
+    shelfId        Int      @map("shelf_id")
     invoiceNumber  String   @unique @map("invoice_number")
     productId      Int      @map("product_id")
     quantityBefore Int      @map("quantity_before")
@@ -272,6 +300,7 @@ model StockAdjustment {
     createdAt      DateTime @default(now()) @map("created_at")
     updatedAt      DateTime @updatedAt @map("updated_at")
 
+    Shelf   Shelf   @relation(fields: [shelfId], references: [id])
     Store   Store   @relation(fields: [storeId], references: [id])
     Product Product @relation(fields: [productId], references: [id])
 }

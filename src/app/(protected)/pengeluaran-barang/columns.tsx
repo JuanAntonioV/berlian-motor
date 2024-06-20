@@ -2,17 +2,17 @@
 
 import CopyText from '@/components/CopyText';
 import { Button } from '@/components/ui/button';
-import { formatRupiah } from '@/lib/formaters';
 import { Prisma } from '@prisma/client';
 import { createColumnHelper } from '@tanstack/react-table';
 import { format } from 'date-fns';
 import Link from 'next/link';
 import { MdEdit } from 'react-icons/md';
 
-type GoodsReceipt = Prisma.GoodsReceiptGetPayload<{
+type ReductionOfGoods = Prisma.ReductionOfGoodsGetPayload<{
   include: {
     Store: true;
     User: true;
+    Shelf: true;
     Product: {
       include: {
         Category: true;
@@ -23,9 +23,9 @@ type GoodsReceipt = Prisma.GoodsReceiptGetPayload<{
   };
 }>;
 
-const columnHelper = createColumnHelper<GoodsReceipt>();
+const columnHelper = createColumnHelper<ReductionOfGoods>();
 
-export const goodsReceiptColumns = [
+export const reductionOfGoodsColumns = [
   columnHelper.accessor('invoiceNumber', {
     header: 'Nomor penerimaan',
     enableSorting: false,
@@ -33,6 +33,11 @@ export const goodsReceiptColumns = [
   }),
   columnHelper.accessor('Product.sku', {
     header: 'SKU produk',
+    enableSorting: false,
+    cell: (row) => (row.getValue() ? <CopyText value={row.getValue()} /> : '-'),
+  }),
+  columnHelper.accessor('Shelf.name', {
+    header: 'Kode rak',
     enableSorting: false,
     cell: (row) => (row.getValue() ? <CopyText value={row.getValue()} /> : '-'),
   }),
@@ -55,7 +60,7 @@ export const goodsReceiptColumns = [
       <div className='flexCenter gap-4'>
         <Button variant={'outline'} size={'icon'} asChild>
           <Link
-            href={`/penerimaan-barang/${row.row.original.invoiceNumber}`}
+            href={`/pengurangan-barang/${row.row.original.invoiceNumber}`}
             className='text-blue-500 border-blue-500 hover:text-blue-500'
           >
             <MdEdit size={20} />

@@ -2,15 +2,15 @@
 
 import db from '@/lib/db';
 import { ServerErrorException } from '@/lib/exceptions';
-import { goodsReceiptSchema } from '@/lib/validations';
+import { reductionOfGoodsSchema } from '@/lib/validations';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import path from 'path';
 import fs from 'fs/promises';
-import { getGoodsReceiptId } from '@/getters/goodsReceiptGetter';
+import { getReductionOfGoodsId } from '@/getters/reductionOfGoodsGetter';
 import { auth } from '@/lib/auth';
 
-export async function createGoodsReceiptAction(
+export async function createReductionOfGoodsAction(
   prevState: any,
   formData: FormData
 ) {
@@ -18,18 +18,16 @@ export async function createGoodsReceiptAction(
   const attachment: File | null = formData.get('attachment') as unknown as File;
   const notes = formData.get('notes') as string;
   const sku = formData.get('sku') as string;
-  const supplier = formData.get('supplier') as string;
   const shelfId = formData.get('shelfId') as string;
   const reference = formData.get('reference') as string;
   const quantity = formData.get('quantity') as string;
 
-  const validate = goodsReceiptSchema.safeParse({
+  const validate = reductionOfGoodsSchema.safeParse({
     invoiceNumber,
     attachment,
     notes,
     shelfId,
     sku,
-    supplier,
     reference,
     quantity: parseInt(quantity),
   });
@@ -39,7 +37,7 @@ export async function createGoodsReceiptAction(
   }
 
   if (!invoiceNumber) {
-    invoiceNumber = await getGoodsReceiptId();
+    invoiceNumber = await getReductionOfGoodsId();
   }
 
   try {
@@ -74,14 +72,14 @@ export async function createGoodsReceiptAction(
     const session = await auth();
     const user = session?.user;
 
-    const goodsReceiptData = await db.goodsReceipt.create({
+    const reductionOfGoodsData = await db.reductionOfGoods.create({
       data: {
         invoiceNumber,
         notes,
         productId: findProduct.id,
         storeId: 1,
+        shelfId: parseInt(shelfId),
         userId: parseInt(user?.id!),
-        supplier,
         reference,
         quantity: parseInt(quantity),
       },
@@ -97,25 +95,34 @@ export async function createGoodsReceiptAction(
     });
 
     if (productStocks) {
-      await db.productStock.update({
-        where: {
-          id: productStocks.id,
-          shelfId: parseInt(shelfId),
-          storeId: 1,
-        },
-        data: {
-          quantity: productStocks.quantity + parseInt(quantity),
-        },
-      });
-    } else {
-      await db.productStock.create({
-        data: {
-          productId: findProduct.id,
-          storeId: 1,
-          shelfId: parseInt(shelfId),
-          quantity: parseInt(quantity),
-        },
-      });
+      if (productStocks.quantity < parseInt(quantity)) {
+        return {
+          error: {
+            message: 'Stok tidak cukup',
+          },
+        };
+      }
+
+      const remainingQuantity = productStocks.quantity - parseInt(quantity);
+
+      if (remainingQuantity <= 0) {
+        await db.productStock.delete({
+          where: {
+            id: productStocks.id,
+          },
+        });
+      } else {
+        await db.productStock.update({
+          where: {
+            id: productStocks.id,
+            shelfId: parseInt(shelfId),
+            storeId: 1,
+          },
+          data: {
+            quantity: productStocks.quantity - parseInt(quantity),
+          },
+        });
+      }
     }
 
     if (attachment && attachment.size > 0) {
@@ -129,9 +136,9 @@ export async function createGoodsReceiptAction(
       const bytes = await attachment.arrayBuffer();
       await fs.writeFile(filePath, Buffer.from(bytes));
 
-      await db.goodsReceipt.update({
+      await db.reductionOfGoods.update({
         where: {
-          id: goodsReceiptData.id,
+          id: reductionOfGoodsData.id,
         },
         data: {
           attachment: `/uploads/${newFileName}`,
@@ -143,6 +150,6 @@ export async function createGoodsReceiptAction(
     throw new ServerErrorException(err.message);
   }
 
-  revalidatePath('/penerimaan-barang');
-  redirect('/penerimaan-barang');
+  revalidatePath('/pengurangan-barang');
+  redirect('/pengurangan-barang');
 }
