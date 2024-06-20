@@ -12,8 +12,15 @@ import {
 import { Fragment, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { menus } from '@/config/appMenu';
+import { useSession } from 'next-auth/react';
+import { User } from 'next-auth';
 
-export default function SearchMenuDialog() {
+type Props = {
+  user: User;
+};
+
+export default function SearchMenuDialog({ user }: Props) {
+  const roleId = user?.role[0];
   const [open, setOpen] = useState(false);
   const router = useRouter();
 
@@ -41,8 +48,6 @@ export default function SearchMenuDialog() {
       setOpen(false);
       router.push(selected.href);
     }
-
-    return;
   }
 
   return (
@@ -50,34 +55,36 @@ export default function SearchMenuDialog() {
       <CommandInput placeholder='Cari menu...' />
       <CommandList>
         <CommandEmpty>Menu tidak ditemukan</CommandEmpty>
-        {menus.map((menu) => (
-          <Fragment key={`command-search-${menu.label}`}>
-            {menu.subMenus && menu.subMenus.length > 0 ? (
-              <CommandGroup heading={menu.label}>
-                {menu.subMenus.map((subMenu) => (
-                  <Fragment key={`subCommand-search-${subMenu.label}`}>
-                    <CommandItem
-                      value={subMenu.label}
-                      onSelect={() => handleSelect('submenu', subMenu.id)}
-                      className='flex items-center gap-1 text-neutral-600 p-4'
-                    >
-                      {subMenu.label}
-                    </CommandItem>
-                  </Fragment>
-                ))}
-              </CommandGroup>
-            ) : (
-              <CommandItem
-                className='flex items-center gap-1 text-neutral-600 p-4'
-                value={menu.label}
-                onSelect={() => handleSelect('menu', menu.id)}
-              >
-                {menu.label}
-              </CommandItem>
-            )}
-            <CommandSeparator />
-          </Fragment>
-        ))}
+        {menus
+          .filter((menu) => menu.roles?.includes(roleId as number))
+          .map((menu) => (
+            <Fragment key={`command-search-${menu.label}`}>
+              {menu.subMenus && menu.subMenus.length > 0 ? (
+                <CommandGroup heading={menu.label}>
+                  {menu.subMenus.map((subMenu) => (
+                    <Fragment key={`subCommand-search-${subMenu.label}`}>
+                      <CommandItem
+                        value={subMenu.label}
+                        onSelect={() => handleSelect('submenu', subMenu.id)}
+                        className='flex items-center gap-1 text-neutral-600 p-4'
+                      >
+                        {subMenu.label}
+                      </CommandItem>
+                    </Fragment>
+                  ))}
+                </CommandGroup>
+              ) : (
+                <CommandItem
+                  className='flex items-center gap-1 text-neutral-600 p-4'
+                  value={menu.label}
+                  onSelect={() => handleSelect('menu', menu.id)}
+                >
+                  {menu.label}
+                </CommandItem>
+              )}
+              <CommandSeparator />
+            </Fragment>
+          ))}
       </CommandList>
     </CommandDialog>
   );

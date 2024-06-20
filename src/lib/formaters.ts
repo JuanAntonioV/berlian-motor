@@ -1,4 +1,4 @@
-export const formatRupiah = (angka: number | bigint) => {
+export const formatRupiah = (angka: number) => {
   if (angka) {
     return new Intl.NumberFormat('id', {
       style: 'currency',
@@ -10,7 +10,7 @@ export const formatRupiah = (angka: number | bigint) => {
   }
 };
 
-export function formatInputRupiah(angka: number | bigint, prefix?: string) {
+export function formatInputRupiah(angka: number, prefix?: string) {
   if (angka) {
     const number_string = angka
       .toString()
@@ -37,6 +37,39 @@ export const parseRupiah = (stringNumber: string) => {
   if (stringNumber) {
     const number = stringNumber.split('.').join('');
     return Number(number);
+  } else {
+    return 0;
+  }
+};
+
+export const formatNumber = (angka: number) => {
+  if (angka) {
+    const reverse = angka.toString().split('').reverse().join('');
+    const ribuan = reverse.match(/\d{1,3}/g);
+    const number = ribuan?.join(',').split('').reverse().join('');
+
+    return number;
+  } else {
+    return 0;
+  }
+};
+
+export const formatTotalSales = (total: number) => {
+  if (total) {
+    // make the result is like 4K+ or 1M+ or 1B+ if the total is more than 1000
+    if (total >= 1000 && total < 1000000) {
+      return `${(total / 1000).toFixed(1)}K+`;
+    }
+
+    if (total >= 1000000 && total < 1000000000) {
+      return `${(total / 1000000).toFixed(1)}M+`;
+    }
+
+    if (total >= 1000000000) {
+      return `${(total / 1000000000).toFixed(1)}B+`;
+    }
+
+    return total;
   } else {
     return 0;
   }

@@ -2,6 +2,7 @@ export type TSubMenus = {
   id: number;
   label: string;
   href: string;
+  roles?: number[];
 };
 
 export type TMenu = {
@@ -10,6 +11,7 @@ export type TMenu = {
   label: string;
   href: string;
   subMenus?: TSubMenus[];
+  roles?: number[];
 };
 
 export type TZodError = {
@@ -56,4 +58,12 @@ export type TSearchParamsData = {
   search?: string;
   from?: string;
   to?: string;
+};
+
+export type TStatItem = {
+  id: string;
+  name: string;
+  value: number;
+  description: string;
+  type: 'currency' | 'number' | 'date';
 };

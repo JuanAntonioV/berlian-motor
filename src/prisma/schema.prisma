@@ -28,6 +28,7 @@ model User {
     Roles            UserRoles[]
     GoodsReceipt     GoodsReceipt[]
     ReductionOfGoods ReductionOfGoods[]
+    Transfer         Transfer[]
 
     @@map("users")
 }
@@ -177,6 +178,7 @@ model Store {
     ProductStock     ProductStock[]
     StockAdjustment  StockAdjustment[]
     ReductionOfGoods ReductionOfGoods[]
+    Transfer         Transfer[]
 
     @@map("stores")
 }
@@ -268,18 +270,21 @@ model ReductionOfGoods {
 
 model Transfer {
     id            Int      @id @default(autoincrement())
+    storeId       Int      @map("store_id")
     shelfId       Int      @map("shelf_id")
     shelfToId     Int      @map("shelf_to_id")
     productId     Int      @map("product_id")
+    userId        Int      @map("user_id")
     quantity      Int
     invoiceNumber String   @unique @map("invoice_number")
     reference     String?
     attachment    String?
     notes         String?
-    status        String
     createdAt     DateTime @default(now()) @map("created_at")
     updatedAt     DateTime @updatedAt @map("updated_at")
 
+    Store   Store   @relation(fields: [storeId], references: [id])
+    User    User    @relation(fields: [userId], references: [id])
     Shelf   Shelf   @relation("shelf", fields: [shelfId], references: [id])
     ShelfTo Shelf   @relation("shelfTo", fields: [shelfToId], references: [id])
     Product Product @relation(fields: [productId], references: [id])

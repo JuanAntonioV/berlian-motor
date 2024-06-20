@@ -1,4 +1,4 @@
-import { TSearchParamsData } from '@/types';
+import { TMenu, TSearchParamsData } from '@/types';
 import { type ClassValue, clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 

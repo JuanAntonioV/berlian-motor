@@ -13,6 +13,8 @@ const protectedRoutes = [
   '/kelola-rak',
 ];
 
+const staffRoutes = ['/', '/dashboard', '/akun-saya', '/kelola-produk'];
+
 const unprotectedRoutes = ['/auth/login'];
 
 const { auth } = NextAuth(authConfig);
@@ -21,6 +23,7 @@ async function middleware(req: any) {
   const { nextUrl, auth } = req;
 
   const user = auth?.user;
+  const roleId = user?.role[0];
 
   const isProtectedRoute = protectedRoutes.some((prefix) =>
     nextUrl.pathname.startsWith(prefix)
@@ -31,6 +34,11 @@ async function middleware(req: any) {
     return NextResponse.rewrite(absoluteURL.toString());
   }
   if (user && unprotectedRoutes.includes(nextUrl.pathname)) {
+    const absoluteURL = new URL('/dashboard', nextUrl.origin);
+    return NextResponse.redirect(absoluteURL.toString());
+  }
+
+  if (roleId === 3 && !staffRoutes.includes(nextUrl.pathname)) {
     const absoluteURL = new URL('/dashboard', nextUrl.origin);
     return NextResponse.redirect(absoluteURL.toString());
   }

@@ -12,6 +12,7 @@ export const menus: TMenu[] = [
     href: '/dashboard',
     icon: <MdSpaceDashboard size={24} />,
     subMenus: [],
+    roles: [1, 2, 3],
   },
   {
     id: 2,
@@ -19,6 +20,7 @@ export const menus: TMenu[] = [
     href: '/kelola-produk',
     icon: <HiShoppingBag size={24} />,
     subMenus: [],
+    roles: [1, 2, 3],
   },
   {
     id: 3,
@@ -26,6 +28,7 @@ export const menus: TMenu[] = [
     href: '/kelola-karyawan',
     icon: <FaUsers size={24} />,
     subMenus: [],
+    roles: [1, 2],
   },
   {
     id: 4,
@@ -49,6 +52,7 @@ export const menus: TMenu[] = [
         href: '/kelola-rak',
       },
     ],
+    roles: [1, 2],
   },
   {
     id: 5,
@@ -71,12 +75,8 @@ export const menus: TMenu[] = [
         label: 'Transfer Barang',
         href: '/transfer-barang',
       },
-      {
-        id: 4,
-        label: 'Penyesuaian Barang',
-        href: '/penyesuaian-barang',
-      },
     ],
+    roles: [1, 2],
   },
 ];
 

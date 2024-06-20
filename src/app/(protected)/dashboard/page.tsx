@@ -1,18 +1,18 @@
-import { auth } from '@/lib/auth';
+import PageTitle from '@/components/PageTitle';
+import StatSection from '@/components/StatSection';
+import { Suspense } from 'react';
 
 export default async function DashboardPage() {
-  const session = await auth();
-  console.log('🚀 ~ DashboardPage ~ session:', session);
-
   return (
     <div>
-      <h1>Dashboard Page</h1>
-      {session && (
-        <div>
-          <h2>Session</h2>
-          <pre>{JSON.stringify(session, null, 2)}</pre>
-        </div>
-      )}
+      <PageTitle
+        title='Dashboard'
+        description='Lihat statistik dan data penting lainnya di sini.'
+      />
+
+      <Suspense fallback={<div>Loading...</div>}>
+        <StatSection />
+      </Suspense>
     </div>
   );
 }

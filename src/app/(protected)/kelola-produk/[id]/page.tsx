@@ -12,6 +12,7 @@ import { getCategoriesList } from '@/getters/categoryGetter';
 import { getProductById, getProductStocks } from '@/getters/productGetter';
 import { CgTrash } from 'react-icons/cg';
 import { productStockColumns } from '../columns';
+import { auth } from '@/lib/auth';
 
 export default async function EditProductPage({
   params,
@@ -24,6 +25,10 @@ export default async function EditProductPage({
   const productStocks = await getProductStocks(String(id));
 
   const data = await getProductById(String(id));
+
+  const session = await auth();
+  const user = session?.user;
+  const roleId = user?.role[0];
 
   if (!data) {
     return <NotFoundScreen />;
@@ -51,6 +56,7 @@ export default async function EditProductPage({
             brandsList={brandsList}
             categoriesList={categoriesList}
             data={data}
+            roleId={roleId!}
           />
         </Section>
 
@@ -71,31 +77,33 @@ export default async function EditProductPage({
             />
           </Section>
 
-          <Section>
-            <SectionHeader className='border-b pb-4'>
-              <div>
-                <h2 className='text-lg font-semibold'>Hapus produk</h2>
-                <p className='text-sm text-gray-500'>
-                  Hapus produk digunakan untuk menghapus data produk.
-                </p>
-              </div>
-            </SectionHeader>
+          {roleId === 1 || roleId === 2 ? (
+            <Section>
+              <SectionHeader className='border-b pb-4'>
+                <div>
+                  <h2 className='text-lg font-semibold'>Hapus produk</h2>
+                  <p className='text-sm text-gray-500'>
+                    Hapus produk digunakan untuk menghapus data produk.
+                  </p>
+                </div>
+              </SectionHeader>
 
-            <main className='mb-4'>
-              <DeleteModal name='produk' action={deleteProductAction} id={id}>
-                <Button variant={'destructive'} className='gap-1'>
-                  <CgTrash size={20} />
-                  Hapus Produk
-                </Button>
-              </DeleteModal>
-            </main>
-            <footer>
-              <p className='text-sm text-gray-500 mt-2'>
-                Tinda ini tidak dapat dikembalikan. Pastikan untuk memilih
-                produk yang benar.
-              </p>
-            </footer>
-          </Section>
+              <main className='mb-4'>
+                <DeleteModal name='produk' action={deleteProductAction} id={id}>
+                  <Button variant={'destructive'} className='gap-1'>
+                    <CgTrash size={20} />
+                    Hapus Produk
+                  </Button>
+                </DeleteModal>
+              </main>
+              <footer>
+                <p className='text-sm text-gray-500 mt-2'>
+                  Tinda ini tidak dapat dikembalikan. Pastikan untuk memilih
+                  produk yang benar.
+                </p>
+              </footer>
+            </Section>
+          ) : null}
         </div>
       </div>
     </div>

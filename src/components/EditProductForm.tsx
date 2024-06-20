@@ -22,6 +22,7 @@ import SubmitButton from './SubmitButtom';
 type Props = {
   brandsList: Brand[];
   categoriesList: Category[];
+  roleId: number;
   data: Prisma.ProductGetPayload<{
     include: {
       Brand: true;
@@ -34,9 +35,9 @@ export default function EditProductForm({
   brandsList,
   categoriesList,
   data,
+  roleId,
 }: Props) {
   const [state, action] = useFormState(updateProductAction, { error: {} });
-  console.log('🚀 ~ state:', state);
 
   const [previewImage, setPreviewImage] = useState<string | null>(null);
 
@@ -116,7 +117,12 @@ export default function EditProductForm({
         )}
 
         <div className='pt-2'>
-          <Input type='file' name='image' onChange={onImageChange} />
+          <Input
+            type='file'
+            name='image'
+            onChange={onImageChange}
+            disabled={roleId === 3}
+          />
         </div>
 
         {state?.error?.image && (
@@ -133,6 +139,7 @@ export default function EditProductForm({
             type='text'
             id='name'
             name='name'
+            disabled={roleId === 3}
             defaultValue={data.name}
             placeholder='Masukkan nama produk'
           />
@@ -164,7 +171,11 @@ export default function EditProductForm({
           Merek<span className='text-red-500 ml-1'>*</span>
         </Label>
 
-        <Select name='brand' defaultValue={String(data.brandId)}>
+        <Select
+          name='brand'
+          defaultValue={String(data.brandId)}
+          disabled={roleId === 3}
+        >
           <SelectTrigger className='w-full'>
             <SelectValue placeholder='Pilih brand' />
           </SelectTrigger>
@@ -194,6 +205,7 @@ export default function EditProductForm({
           type='text'
           id='type'
           name='type'
+          disabled={roleId === 3}
           defaultValue={data.type}
           placeholder='Masukkan tipe produk'
         />
@@ -211,6 +223,7 @@ export default function EditProductForm({
           <Input
             type='text'
             id='salePrice'
+            disabled={roleId === 3}
             name='salePrice'
             placeholder='Masukkan harga jual produk'
             value={price.salePrice}
@@ -229,6 +242,7 @@ export default function EditProductForm({
           <Input
             type='text'
             id='supplierPrice'
+            disabled={roleId === 3}
             name='supplierPrice'
             placeholder='Masukkan harga pemasok produk'
             value={price.supplierPrice}
@@ -247,6 +261,7 @@ export default function EditProductForm({
           <Input
             type='text'
             id='wholesalePrice'
+            disabled={roleId === 3}
             name='wholesalePrice'
             placeholder='Masukkan harga grosir produk'
             value={price.wholesalePrice}
@@ -266,6 +281,7 @@ export default function EditProductForm({
             type='text'
             id='retailPrice'
             name='retailPrice'
+            disabled={roleId === 3}
             placeholder='Masukkan harga eceran produk'
             value={price.retailPrice}
             onChange={onChangePrice}
@@ -284,6 +300,7 @@ export default function EditProductForm({
         <Input
           type='text'
           id='workshopPrice'
+          disabled={roleId === 3}
           name='workshopPrice'
           placeholder='Masukkan harga bengkel produk'
           value={price.workshopPrice}
@@ -302,6 +319,7 @@ export default function EditProductForm({
             label: category.name,
             value: String(category.id),
           }))}
+          disabled={roleId === 3}
           placeholder='Pilih kategori produk'
           emptyIndicator={
             <p className='text-center text-lg leading-10 text-gray-600 dark:text-gray-400'>
@@ -332,6 +350,7 @@ export default function EditProductForm({
         <Textarea
           id='description'
           name='description'
+          disabled={roleId === 3}
           defaultValue={data.description || ''}
           placeholder='Masukkan keterangan produk'
         />
@@ -341,9 +360,11 @@ export default function EditProductForm({
         )}
       </div>
 
-      <div className='form-group mt-4'>
-        <SubmitButton className='w-fit'>Simpan</SubmitButton>
-      </div>
+      {roleId === 1 || roleId === 2 ? (
+        <div className='form-group mt-4'>
+          <SubmitButton className='w-fit'>Simpan</SubmitButton>
+        </div>
+      ) : null}
     </Form>
   );
 }

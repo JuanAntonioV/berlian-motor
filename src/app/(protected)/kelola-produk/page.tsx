@@ -9,7 +9,8 @@ import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import { MdAdd } from 'react-icons/md';
 import { getAllProducts } from '@/getters/productGetter';
-import { productColumns } from './columns';
+import { productColumns, productStaffColumns } from './columns';
+import { auth } from '@/lib/auth';
 
 export default async function ManageProductPage({
   searchParams,
@@ -18,6 +19,10 @@ export default async function ManageProductPage({
 }) {
   const searchParamsData = getSearchParams(searchParams);
   const data = await getAllProducts({ params: searchParamsData });
+
+  const session = await auth();
+  const user = session?.user;
+  const roleId = user?.role[0];
 
   return (
     <div>
@@ -29,17 +34,21 @@ export default async function ManageProductPage({
       <Section>
         <SectionHeader>
           <Search />
-          <Button className='ml-auto' asChild>
-            <Link href='kelola-produk/tambah'>
-              <MdAdd size={20} />
-              Tambah
-            </Link>
-          </Button>
+          {roleId === 1 || roleId === 2 ? (
+            <Button className='ml-auto' asChild>
+              <Link href='kelola-produk/tambah'>
+                <MdAdd size={20} />
+                Tambah
+              </Link>
+            </Button>
+          ) : null}
         </SectionHeader>
 
         <DataTable
           data={data.data || []}
-          columns={productColumns}
+          columns={
+            roleId === 1 || roleId === 2 ? productColumns : productStaffColumns
+          }
           pageCount={Math.ceil(data.total / (data.per_page || 0) || 0)}
         />
       </Section>
