@@ -20,7 +20,7 @@ export default async function Header() {
   const user = session?.user;
 
   return (
-    <header className='w-full bg-white border-b border-b-gray-200'>
+    <header className='w-full bg-white border-b border-b-gray-200 shadow'>
       <div className='px-4 md:px-10 h-20 flexCenter'>
         <div className='flexBetween w-full'>
           <div className='flexStart gap-x-4'>

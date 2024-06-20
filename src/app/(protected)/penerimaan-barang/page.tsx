@@ -1,36 +1,36 @@
-import { TSearchParamsData } from '@/types';
 import DataTable from '@/components/DataTable';
 import PageTitle from '@/components/PageTitle';
 import Search from '@/components/Search';
 import Section from '@/components/Section';
 import SectionHeader from '@/components/SectionHeader';
-import { getSearchParams } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
+import { getAllReceipts } from '@/getters/goodsReceiptGetter';
+import { getSearchParams } from '@/lib/utils';
+import { TSearchParamsData } from '@/types';
 import Link from 'next/link';
 import { MdAdd } from 'react-icons/md';
-import { getAllProducts } from '@/getters/productGetter';
-import { productColumns } from './columns';
+import { goodsReceiptColumns } from './columns';
 
-export default async function ManageProductPage({
+export default async function ManageGoodReceiptPage({
   searchParams,
 }: {
   searchParams: TSearchParamsData;
 }) {
   const searchParamsData = getSearchParams(searchParams);
-  const data = await getAllProducts({ params: searchParamsData });
+  const data = await getAllReceipts({ params: searchParamsData });
 
   return (
     <div>
       <PageTitle
-        title={'Kelola Produk'}
-        description='Kelola produk yang digunakan untuk mengelola data produk.'
+        title={'Penerimaan Barang'}
+        description='Penerimaan barang yang digunakan untuk mengelola data penerimaan barang.'
       />
 
       <Section>
         <SectionHeader>
           <Search />
           <Button className='ml-auto' asChild>
-            <Link href='kelola-produk/tambah'>
+            <Link href='penerimaan-barang/tambah'>
               <MdAdd size={20} />
               Tambah
             </Link>
@@ -39,7 +39,7 @@ export default async function ManageProductPage({
 
         <DataTable
           data={data.data || []}
-          columns={productColumns}
+          columns={goodsReceiptColumns}
           pageCount={Math.ceil(data.total / (data.per_page || 0) || 0)}
         />
       </Section>

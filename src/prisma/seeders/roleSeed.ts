@@ -3,6 +3,10 @@ import type { Prisma, PrismaClient } from '@prisma/client';
 export async function roleSeed(prisma: PrismaClient) {
   const roles: Prisma.RolesCreateInput[] = [
     {
+      name: 'Super Admin',
+      status: true,
+    },
+    {
       name: 'Admin',
       status: true,
     },

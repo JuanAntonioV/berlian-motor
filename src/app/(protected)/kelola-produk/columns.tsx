@@ -135,19 +135,4 @@ export const productStockColumns = [
     cell: (row) =>
       row.getValue() ? format(row.getValue() as Date, 'dd MMMM yyyy') : '-',
   }),
-  productStockColumnHelper.display({
-    header: 'Aksi',
-    cell: (row) => (
-      <div className='flexCenter gap-4'>
-        <Button variant={'outline'} size={'icon'} asChild>
-          <Link
-            href={`/kelola-produk/${row.row.original.id}`}
-            className='text-blue-500 border-blue-500 hover:text-blue-500'
-          >
-            <MdEdit size={20} />
-          </Link>
-        </Button>
-      </div>
-    ),
-  }),
 ];

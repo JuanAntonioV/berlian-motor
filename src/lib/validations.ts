@@ -372,3 +372,69 @@ export const changeProfileSchema = z.object({
     .min(1, 'Email wajib diisi')
     .max(45, 'Email maksimal 45 karakter'),
 });
+
+export const goodsReceiptSchema = z.object({
+  attachment: z
+    .instanceof(File, {
+      message: 'Foto tidak valid',
+    })
+    .refine((data) => {
+      if (!data || data?.size === 0) return true;
+      return data.size < 5 * 1024 * 1024;
+    }, 'Ukuran foto maksimal 5MB')
+    .refine((data) => {
+      if (!data || data?.size === 0) return true;
+      const types = ['image/png', 'image/jpg', 'image/jpeg'];
+      return types.includes(data.type);
+    }, 'Foto harus berupa file gambar')
+    .optional()
+    .nullable(),
+  invoiceNumber: z
+    .string({
+      required_error: 'Nama wajib diisi',
+      invalid_type_error: 'Nama tidak valid',
+      message: 'Nama tidak valid',
+    })
+    .max(35, 'Nama maksimal 35 karakter')
+    .nullable(),
+  sku: z
+    .string({
+      required_error: 'Produk wajib diisi',
+      invalid_type_error: 'Produk tidak valid',
+      message: 'Produk tidak valid',
+    })
+    .min(1, 'Produk wajib diisi'),
+  shelfId: z
+    .string({
+      required_error: 'Rak wajib diisi',
+      invalid_type_error: 'Rak tidak valid',
+      message: 'Rak tidak valid',
+    })
+    .min(1, 'Rak wajib diisi'),
+  supplier: z
+    .string({
+      required_error: 'Pemasok wajib diisi',
+      invalid_type_error: 'Pemasok tidak valid',
+      message: 'Pemasok tidak valid',
+    })
+    .min(1, 'Pemasok wajib diisi'),
+  reference: z
+    .string({
+      required_error: 'Referensi wajib diisi',
+      invalid_type_error: 'Referensi tidak valid',
+      message: 'Referensi tidak valid',
+    })
+    .nullable(),
+  notes: z
+    .string({
+      required_error: 'Keterangan tambahan wajib diisi',
+      invalid_type_error: 'Keterangan tambahan tidak valid',
+      message: 'Keterangan tambahan tidak valid',
+    })
+    .nullable(),
+  quantity: z.number({
+    required_error: 'Jumlah wajib diisi',
+    invalid_type_error: 'Jumlah tidak valid',
+    message: 'Jumlah tidak valid',
+  }),
+});

@@ -284,14 +284,27 @@ export async function deleteProductAction(prevState: any, formData: FormData) {
 }
 
 export async function generateSKU() {
-  // make it like this SK-xxxx
+  // make it like this SK-0001
   const prefix = 'SK';
-  const random = Math.floor(Math.random() * 10000);
+  const lastId = await db.product.findFirst({
+    orderBy: {
+      id: 'desc',
+    },
+  });
+
+  if (!lastId) {
+    return `${prefix}-0001`;
+  }
+
+  // get the last 0001 from sku
+  const lastSKU = lastId.sku.split('-')[1];
+  // increment the last 0001
+  const number = ('000' + (parseInt(lastSKU) + 1)).slice(-4);
 
   // check if sku already exist
   const sku = await db.product.findFirst({
     where: {
-      sku: `${prefix}-${random}`,
+      sku: `${prefix}-${number}`,
     },
   });
 
@@ -299,5 +312,5 @@ export async function generateSKU() {
     generateSKU();
   }
 
-  return `${prefix}-${random}`;
+  return `${prefix}-${number}`;
 }
