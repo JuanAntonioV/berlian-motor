@@ -22,7 +22,6 @@ export default function EditShelfModal({ data }: Props) {
     error: {},
     success: undefined,
   });
-  console.log('🚀 ~ EditShelfModal ~ state:', state);
 
   useEffect(() => {
     if (state?.success) {

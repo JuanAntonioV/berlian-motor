@@ -35,6 +35,9 @@ export async function getAllTransfers({
               name: {
                 contains: params.search?.toLocaleLowerCase(),
               },
+              sku: {
+                contains: params.search?.toLocaleLowerCase(),
+              },
             },
           },
           {
@@ -89,6 +92,9 @@ export async function getAllTransfers({
           {
             Product: {
               name: {
+                contains: params.search?.toLocaleLowerCase(),
+              },
+              sku: {
                 contains: params.search?.toLocaleLowerCase(),
               },
             },

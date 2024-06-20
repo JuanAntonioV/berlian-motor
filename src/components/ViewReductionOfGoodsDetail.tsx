@@ -1,3 +1,5 @@
+'use client';
+
 import { Prisma } from '@prisma/client';
 import { Button } from './ui/button';
 import Link from 'next/link';
@@ -51,7 +53,10 @@ export default function ViewReductionOfGoodsDetail({ data }: Props) {
             className='bg-slate-500 text-white hover:bg-slate-600/90'
             asChild
           >
-            <Link href='/penerimaan-barang' className='flex items-center gap-1'>
+            <Link
+              href='/pengeluaran-barang'
+              className='flex items-center gap-1'
+            >
               <MdKeyboardBackspace size={18} />
               Kembali
             </Link>
@@ -61,10 +66,10 @@ export default function ViewReductionOfGoodsDetail({ data }: Props) {
 
       <main className='mt-6'>
         <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4'>
-          <CardCollapsable title='Detail Penerimaan'>
+          <CardCollapsable title='Detail Pengeluaran'>
             <div className='flexBetween gap-4'>
               <div className='py-2 space-y-2'>
-                <p className='text-sm text-gray-500'>Nomor Penerimaan</p>
+                <p className='text-sm text-gray-500'>Nomor Pengeluaran</p>
                 {data.invoiceNumber ? (
                   <CopyText value={data.invoiceNumber} className='font-bold' />
                 ) : (
@@ -86,7 +91,7 @@ export default function ViewReductionOfGoodsDetail({ data }: Props) {
             </div>
             <div className='flexBetween gap-4'>
               <div className='py-2 space-y-2'>
-                <p className='text-sm text-gray-500'>Tanggal Penerimaan</p>
+                <p className='text-sm text-gray-500'>Tanggal Pengeluaran</p>
                 <p className='font-bold'>
                   {data.createdAt ? format(data.createdAt, 'dd MMMM y') : '-'}
                 </p>
@@ -99,24 +104,16 @@ export default function ViewReductionOfGoodsDetail({ data }: Props) {
             </div>
           </CardCollapsable>
 
-          <CardCollapsable title='Detail Pemasok'>
+          <CardCollapsable title='Detail Karyawan'>
             <div className='flexBetween gap-4'>
               <div className='py-2 space-y-2'>
-                <p className='text-sm text-gray-500'>Nama Rak</p>
-                <p className='font-bold'>{data.Shelf.name || '-'}</p>
-              </div>
-            </div>
-          </CardCollapsable>
-          <CardCollapsable title='Detail Pemasok'>
-            <div className='flexBetween gap-4'>
-              <div className='py-2 space-y-2'>
-                <p className='text-sm text-gray-500'>Nama penerima</p>
+                <p className='text-sm text-gray-500'>Nama karyawan</p>
                 <p className='font-bold'>{data.User.name || '-'}</p>
               </div>
             </div>
             <div className='flexBetween gap-4'>
               <div className='py-2 space-y-2'>
-                <p className='text-sm text-gray-500'>Email penerima</p>
+                <p className='text-sm text-gray-500'>Email karyawan</p>
                 <p className='font-bold'>{data.User.email || '-'}</p>
               </div>
             </div>

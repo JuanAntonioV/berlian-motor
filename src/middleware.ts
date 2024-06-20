@@ -13,7 +13,7 @@ const protectedRoutes = [
   '/kelola-rak',
 ];
 
-const staffRoutes = ['/', '/dashboard', '/akun-saya', '/kelola-produk'];
+const staffRoutes = ['/', '/dashboard', '/akun-saya'];
 
 const unprotectedRoutes = ['/auth/login'];
 
@@ -38,10 +38,10 @@ async function middleware(req: any) {
     return NextResponse.redirect(absoluteURL.toString());
   }
 
-  if (roleId === 3 && !staffRoutes.includes(nextUrl.pathname)) {
-    const absoluteURL = new URL('/dashboard', nextUrl.origin);
-    return NextResponse.redirect(absoluteURL.toString());
-  }
+  // if (roleId === 3 && !staffRoutes.includes(nextUrl.pathname)) {
+  //   const absoluteURL = new URL('/dashboard', nextUrl.origin);
+  //   return NextResponse.redirect(absoluteURL.toString());
+  // }
 
   return NextResponse.next();
 }

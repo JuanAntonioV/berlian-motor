@@ -320,7 +320,6 @@ export async function changeStaffPasswordAction(
 
 export async function deleteStaffAction(prevState: any, formData: FormData) {
   const id = formData.get('id') as string;
-  console.log('🚀 ~ deleteStaffAction ~ id:', id);
 
   if (!id) {
     redirect('/not-found');

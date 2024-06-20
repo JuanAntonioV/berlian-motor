@@ -21,6 +21,11 @@ export async function getAllProducts({
               contains: params.search?.toLocaleLowerCase(),
             },
           },
+          {
+            sku: {
+              contains: params.search?.toLocaleLowerCase(),
+            },
+          },
         ],
       },
       orderBy: params.sort
@@ -46,6 +51,11 @@ export async function getAllProducts({
         OR: [
           {
             name: {
+              contains: params.search?.toLocaleLowerCase(),
+            },
+          },
+          {
+            sku: {
               contains: params.search?.toLocaleLowerCase(),
             },
           },

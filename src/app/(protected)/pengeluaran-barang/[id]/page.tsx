@@ -3,7 +3,7 @@ import PageTitle from '@/components/PageTitle';
 import Section from '@/components/Section';
 import ViewReceiptDetail from '@/components/ViewReceiptDetail';
 import ViewReductionOfGoodsDetail from '@/components/ViewReductionOfGoodsDetail';
-import { getReceiptByInvoiceNumber } from '@/getters/goodsReceiptGetter';
+import { getReductionOfGoodsByInvoiceNumber } from '@/getters/reductionOfGoodsGetter';
 
 export default async function ViewGoodsReceiptPage({
   params,
@@ -11,7 +11,7 @@ export default async function ViewGoodsReceiptPage({
   params: { id: string };
 }) {
   const { id } = params;
-  const data = await getReceiptByInvoiceNumber(id);
+  const data = await getReductionOfGoodsByInvoiceNumber(id);
 
   if (!data) {
     return <NotFoundScreen />;

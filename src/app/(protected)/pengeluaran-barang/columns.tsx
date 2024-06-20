@@ -60,7 +60,7 @@ export const reductionOfGoodsColumns = [
       <div className='flexCenter gap-4'>
         <Button variant={'outline'} size={'icon'} asChild>
           <Link
-            href={`/pengurangan-barang/${row.row.original.invoiceNumber}`}
+            href={`/pengeluaran-barang/${row.row.original.invoiceNumber}`}
             className='text-blue-500 border-blue-500 hover:text-blue-500'
           >
             <MdEdit size={20} />

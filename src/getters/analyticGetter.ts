@@ -12,7 +12,6 @@ export async function getStats() {
         quantity: true,
       },
     });
-    console.log('🚀 ~ getStats ~ totalStockIn:', totalStockIn);
     const totalStockOut = await db.reductionOfGoods.aggregate({
       _sum: {
         quantity: true,
