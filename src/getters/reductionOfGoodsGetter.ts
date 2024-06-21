@@ -51,6 +51,16 @@ export async function getAllReductionOfGoods({
               },
             },
           },
+          {
+            User: {
+              name: {
+                contains: params.search?.toLocaleLowerCase(),
+              },
+              email: {
+                contains: params.search?.toLocaleLowerCase(),
+              },
+            },
+          },
         ],
       },
       orderBy: params.sort
@@ -97,6 +107,9 @@ export async function getAllReductionOfGoods({
               name: {
                 contains: params.search?.toLocaleLowerCase(),
               },
+              sku: {
+                contains: params.search?.toLocaleLowerCase(),
+              },
             },
           },
           {
@@ -109,6 +122,16 @@ export async function getAllReductionOfGoods({
           {
             Shelf: {
               name: {
+                contains: params.search?.toLocaleLowerCase(),
+              },
+            },
+          },
+          {
+            User: {
+              name: {
+                contains: params.search?.toLocaleLowerCase(),
+              },
+              email: {
                 contains: params.search?.toLocaleLowerCase(),
               },
             },

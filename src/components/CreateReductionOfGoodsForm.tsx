@@ -1,6 +1,6 @@
 'use client';
 
-import { Product, Shelf } from '@prisma/client';
+import { Prisma, Product, Shelf } from '@prisma/client';
 import Form from './Form';
 import { useFormState } from 'react-dom';
 import { createReductionOfGoodsAction } from '@/actions/reductionOfGoodsAction';
@@ -15,9 +15,32 @@ import {
 } from './ui/select';
 import { Textarea } from './ui/textarea';
 import SubmitButton from './SubmitButtom';
+import { Popover, PopoverContent, PopoverTrigger } from './ui/popover';
+import { Button } from './ui/button';
+import { Check, ChevronsUpDown } from 'lucide-react';
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from './ui/command';
+import { useMemo, useState } from 'react';
+import { cn } from '@/lib/utils';
 
 type Props = {
-  productsList: Product[];
+  productsList: Prisma.ProductGetPayload<{
+    include: {
+      ProductStock: {
+        select: {
+          storeId: true;
+          shelfId: true;
+          quantity: true;
+        };
+      };
+    };
+  }>[];
   reductionOfGoodsId: string;
   shelfsList: Shelf[];
 };
@@ -27,9 +50,27 @@ export default function CreateReductionOfGoodsForm({
   reductionOfGoodsId,
   shelfsList,
 }: Props) {
+  console.log('🚀 ~ productsList:', productsList);
   const [state, action] = useFormState(createReductionOfGoodsAction, {
     error: {},
   });
+
+  const [open, setOpen] = useState(false);
+  const [value, setValue] = useState<string>('');
+  const [openShelf, setOpenShelf] = useState(false);
+  const [valueShelf, setValueShelf] = useState<string>('');
+
+  const availableProducts = useMemo(
+    () =>
+      productsList?.filter(
+        (product) =>
+          product.ProductStock.filter(
+            (stock) =>
+              stock.quantity > 0 && stock.shelfId === parseInt(valueShelf)
+          ).length > 0
+      ),
+    [productsList, valueShelf]
+  );
 
   return (
     <Form action={action}>
@@ -69,24 +110,60 @@ export default function CreateReductionOfGoodsForm({
           Rak penyimpanan<span className='text-red-500 ml-1'>*</span>
         </Label>
 
-        <Select name='shelfId'>
-          <SelectTrigger className='w-full'>
-            <SelectValue placeholder='Pilih rak penyimpanan' />
-          </SelectTrigger>
-          <SelectContent>
-            {shelfsList?.length ? (
-              shelfsList?.map((shelf) => (
-                <SelectItem key={shelf.id} value={String(shelf.id)}>
-                  {shelf.name}
-                </SelectItem>
-              ))
-            ) : (
-              <SelectItem disabled value='-1'>
-                Tidak ada shelf
-              </SelectItem>
-            )}
-          </SelectContent>
-        </Select>
+        <Popover open={openShelf} onOpenChange={setOpenShelf}>
+          <PopoverTrigger asChild>
+            <Button
+              variant='outline'
+              role='combobox'
+              aria-expanded={open}
+              className='w-full justify-between'
+            >
+              {valueShelf
+                ? shelfsList?.find((shelf) => shelf.id === parseInt(valueShelf))
+                    ?.name
+                : 'Pilih rak...'}
+              <ChevronsUpDown className='ml-2 h-4 w-4 shrink-0 opacity-50' />
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent className='w-[400px] p-0'>
+            <Command>
+              <CommandInput placeholder='Cari rak...' name='shelfId' />
+              <CommandList>
+                <CommandEmpty>Tidak ada rak.</CommandEmpty>
+                <CommandGroup>
+                  {shelfsList?.map((shelf) => (
+                    <CommandItem
+                      key={shelf.id}
+                      value={shelf.name}
+                      onSelect={(currentValue) => {
+                        const selected = shelfsList?.find(
+                          (shelf) => shelf.name === currentValue
+                        );
+
+                        if (selected) {
+                          setValueShelf(String(selected.id));
+                        }
+
+                        setOpen(false);
+                      }}
+                    >
+                      <Check
+                        className={cn(
+                          'mr-2 h-4 w-4',
+                          parseInt(valueShelf) === shelf.id
+                            ? 'opacity-100'
+                            : 'opacity-0'
+                        )}
+                      />
+                      {shelf.name}
+                    </CommandItem>
+                  ))}
+                </CommandGroup>
+              </CommandList>
+            </Command>
+          </PopoverContent>
+        </Popover>
+        <input type='hidden' name='shelfId' value={valueShelf} />
 
         {state?.error?.shelfId && (
           <p className='text-red-500 text-sm'>{state.error.shelfId}</p>
@@ -99,24 +176,63 @@ export default function CreateReductionOfGoodsForm({
             Produk<span className='text-red-500 ml-1'>*</span>
           </Label>
 
-          <Select name='sku'>
-            <SelectTrigger className='w-full'>
-              <SelectValue placeholder='Pilih produk' />
-            </SelectTrigger>
-            <SelectContent>
-              {productsList?.length ? (
-                productsList?.map((product) => (
-                  <SelectItem key={product.id} value={product.sku}>
-                    {product.sku} - {product.name}
-                  </SelectItem>
-                ))
-              ) : (
-                <SelectItem disabled value='-1'>
-                  Tidak ada produk
-                </SelectItem>
-              )}
-            </SelectContent>
-          </Select>
+          <Popover open={open} onOpenChange={setOpen}>
+            <PopoverTrigger asChild>
+              <Button
+                variant='outline'
+                role='combobox'
+                aria-expanded={open}
+                className='w-full justify-between'
+              >
+                {value
+                  ? `${
+                      productsList?.find((product) => product.sku === value)
+                        ?.sku
+                    } - ${
+                      productsList?.find((product) => product.sku === value)
+                        ?.name
+                    }`
+                  : 'Pilih produk...'}
+                <ChevronsUpDown className='ml-2 h-4 w-4 shrink-0 opacity-50' />
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className='w-[400px] p-0'>
+              <Command>
+                <CommandInput placeholder='Cari produk...' name='sku' />
+                <CommandList>
+                  <CommandEmpty>Tidak ada produk.</CommandEmpty>
+                  <CommandGroup>
+                    {availableProducts?.map((product) => (
+                      <CommandItem
+                        key={product.id}
+                        value={product.sku}
+                        onSelect={(currentValue) => {
+                          const selected = productsList?.find(
+                            (product) => product.sku === currentValue
+                          );
+
+                          if (selected) {
+                            setValue(selected.sku);
+                          }
+
+                          setOpen(false);
+                        }}
+                      >
+                        <Check
+                          className={cn(
+                            'mr-2 h-4 w-4',
+                            value === product.sku ? 'opacity-100' : 'opacity-0'
+                          )}
+                        />
+                        {product.sku} - {product.name}
+                      </CommandItem>
+                    ))}
+                  </CommandGroup>
+                </CommandList>
+              </Command>
+            </PopoverContent>
+          </Popover>
+          <input type='hidden' name='sku' value={value} />
 
           {state?.error?.sku && (
             <p className='text-red-500 text-sm'>{state.error.sku}</p>
@@ -131,6 +247,13 @@ export default function CreateReductionOfGoodsForm({
             type='number'
             id='quantity'
             min={1}
+            max={
+              productsList
+                ?.find((product) => product.sku === value)
+                ?.ProductStock.find(
+                  (stock) => stock.shelfId === parseInt(valueShelf)
+                )?.quantity || 1
+            }
             defaultValue={1}
             name='quantity'
             onKeyDown={(e) => {

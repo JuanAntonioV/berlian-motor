@@ -6,8 +6,8 @@ import { getProductsList } from '@/getters/productGetter';
 import { getShelfsList } from '@/getters/shelfGetter';
 
 export default async function CreateReductionOfGoodsPage() {
-  const productsList = await getProductsList();
   const reductionOfGoodsId = await getReductionOfGoodsId();
+  const productsList = await getProductsList();
 
   const shelfsList = await getShelfsList();
 

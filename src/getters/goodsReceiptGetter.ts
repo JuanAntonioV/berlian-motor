@@ -35,10 +35,20 @@ export async function getAllReceipts({
               name: {
                 contains: params.search?.toLocaleLowerCase(),
               },
+              sku: {
+                contains: params.search?.toLocaleLowerCase(),
+              },
             },
           },
           {
             Store: {
+              name: {
+                contains: params.search?.toLocaleLowerCase(),
+              },
+            },
+          },
+          {
+            User: {
               name: {
                 contains: params.search?.toLocaleLowerCase(),
               },
@@ -89,10 +99,20 @@ export async function getAllReceipts({
               name: {
                 contains: params.search?.toLocaleLowerCase(),
               },
+              sku: {
+                contains: params.search?.toLocaleLowerCase(),
+              },
             },
           },
           {
             Store: {
+              name: {
+                contains: params.search?.toLocaleLowerCase(),
+              },
+            },
+          },
+          {
+            User: {
               name: {
                 contains: params.search?.toLocaleLowerCase(),
               },

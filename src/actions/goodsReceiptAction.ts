@@ -52,7 +52,7 @@ export async function createGoodsReceiptAction(
     if (!findProduct) {
       return {
         error: {
-          message: 'Produk tidak ditemukan',
+          sku: 'Produk tidak ditemukan',
         },
       };
     }
@@ -66,7 +66,7 @@ export async function createGoodsReceiptAction(
     if (!findShelf) {
       return {
         error: {
-          message: 'Rak tidak ditemukan',
+          shelfId: 'Rak tidak ditemukan',
         },
       };
     }

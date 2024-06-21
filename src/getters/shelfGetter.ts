@@ -52,7 +52,11 @@ export async function getAllShelfs({ params }: { params: TSearchParamsData }) {
 
 export async function getShelfsList() {
   try {
-    const shelfs = await db.shelf.findMany();
+    const shelfs = await db.shelf.findMany({
+      where: {
+        status: true,
+      },
+    });
     return shelfs;
   } catch (err: any) {
     console.error(err);

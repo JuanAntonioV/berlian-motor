@@ -76,7 +76,19 @@ export async function getAllProducts({
 
 export async function getProductsList() {
   try {
-    const products = await db.product.findMany();
+    const products = await db.product.findMany({
+      include: {
+        Brand: true,
+        Category: true,
+        ProductStock: {
+          select: {
+            storeId: true,
+            shelfId: true,
+            quantity: true,
+          },
+        },
+      },
+    });
     return products;
   } catch (err: any) {
     console.error(err);

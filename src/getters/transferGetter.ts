@@ -47,6 +47,20 @@ export async function getAllTransfers({
               },
             },
           },
+          {
+            ShelfTo: {
+              name: {
+                contains: params.search?.toLocaleLowerCase(),
+              },
+            },
+          },
+          {
+            User: {
+              name: {
+                contains: params.search?.toLocaleLowerCase(),
+              },
+            },
+          },
         ],
       },
       orderBy: params.sort
@@ -101,6 +115,20 @@ export async function getAllTransfers({
           },
           {
             Shelf: {
+              name: {
+                contains: params.search?.toLocaleLowerCase(),
+              },
+            },
+          },
+          {
+            ShelfTo: {
+              name: {
+                contains: params.search?.toLocaleLowerCase(),
+              },
+            },
+          },
+          {
+            User: {
               name: {
                 contains: params.search?.toLocaleLowerCase(),
               },
