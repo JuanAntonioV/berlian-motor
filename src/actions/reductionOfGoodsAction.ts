@@ -150,6 +150,6 @@ export async function createReductionOfGoodsAction(
     throw new ServerErrorException(err.message);
   }
 
-  revalidatePath('/pengurangan-barang');
-  redirect('/pengurangan-barang');
+  revalidatePath('/pengeluaran-barang');
+  redirect('/pengeluaran-barang');
 }

@@ -6,13 +6,6 @@ import { useFormState } from 'react-dom';
 import { createReductionOfGoodsAction } from '@/actions/reductionOfGoodsAction';
 import { Label } from './ui/label';
 import { Input } from './ui/input';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from './ui/select';
 import { Textarea } from './ui/textarea';
 import SubmitButton from './SubmitButtom';
 import { Popover, PopoverContent, PopoverTrigger } from './ui/popover';
@@ -50,7 +43,6 @@ export default function CreateReductionOfGoodsForm({
   reductionOfGoodsId,
   shelfsList,
 }: Props) {
-  console.log('🚀 ~ productsList:', productsList);
   const [state, action] = useFormState(createReductionOfGoodsAction, {
     error: {},
   });

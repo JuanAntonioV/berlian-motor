@@ -6,7 +6,11 @@ import { TStatItem } from '@/types';
 
 export async function getStats() {
   try {
-    const totalStock = await db.productStock.count();
+    const totalStock = await db.productStock.aggregate({
+      _sum: {
+        quantity: true,
+      },
+    });
     const totalStockIn = await db.goodsReceipt.aggregate({
       _sum: {
         quantity: true,
@@ -23,7 +27,7 @@ export async function getStats() {
       {
         id: 'total-stock',
         name: 'Total Stok',
-        value: totalStock,
+        value: totalStock._sum.quantity || 0,
         description: 'Dari keseluruhan',
         type: 'number',
       },
