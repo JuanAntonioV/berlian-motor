@@ -53,23 +53,23 @@ export const productColumns = [
   }),
   columnHelper.accessor('salePrice', {
     header: 'Harga jual',
-    cell: (row) => formatRupiah(row.getValue() || 0),
+    cell: (row) => formatRupiah(parseInt(String(row.getValue())) || 0),
   }),
   columnHelper.accessor('supplierPrice', {
     header: 'Harga pemasok',
-    cell: (row) => formatRupiah(row.getValue() || 0),
+    cell: (row) => formatRupiah(parseInt(String(row.getValue())) || 0),
   }),
   columnHelper.accessor('wholesalePrice', {
     header: 'Harga grosir',
-    cell: (row) => formatRupiah(row.getValue() || 0),
+    cell: (row) => formatRupiah(parseInt(String(row.getValue())) || 0),
   }),
   columnHelper.accessor('retailPrice', {
     header: 'Harga eceran',
-    cell: (row) => formatRupiah(row.getValue() || 0),
+    cell: (row) => formatRupiah(parseInt(String(row.getValue())) || 0),
   }),
   columnHelper.accessor('workshopPrice', {
     header: 'Harga bengkel',
-    cell: (row) => formatRupiah(row.getValue() || 0),
+    cell: (row) => formatRupiah(parseInt(String(row.getValue())) || 0),
   }),
   columnHelper.accessor('ProductStock', {
     header: 'Total stok',
@@ -128,19 +128,19 @@ export const productStaffColumns = [
   }),
   columnHelper.accessor('salePrice', {
     header: 'Harga jual',
-    cell: (row) => formatRupiah(row.getValue() || 0),
+    cell: (row) => formatRupiah(parseInt(String(row.getValue())) || 0),
   }),
   columnHelper.accessor('wholesalePrice', {
     header: 'Harga grosir',
-    cell: (row) => formatRupiah(row.getValue() || 0),
+    cell: (row) => formatRupiah(parseInt(String(row.getValue())) || 0),
   }),
   columnHelper.accessor('retailPrice', {
     header: 'Harga eceran',
-    cell: (row) => formatRupiah(row.getValue() || 0),
+    cell: (row) => formatRupiah(parseInt(String(row.getValue())) || 0),
   }),
   columnHelper.accessor('workshopPrice', {
     header: 'Harga bengkel',
-    cell: (row) => formatRupiah(row.getValue() || 0),
+    cell: (row) => formatRupiah(parseInt(String(row.getValue())) || 0),
   }),
   columnHelper.accessor('ProductStock', {
     header: 'Total stok',
