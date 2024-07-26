@@ -1,6 +1,6 @@
 'use client';
 
-import { Brand, Category } from '@prisma/client';
+import { Brand, Category, Types } from '@prisma/client';
 import Form from './Form';
 import { Label } from './ui/label';
 import { Input } from './ui/input';
@@ -18,17 +18,22 @@ import {
 import { formatInputRupiah, parseRupiah } from '@/lib/formaters';
 import MultipleSelector from './ui/multiple-selector';
 import SubmitButton from './SubmitButtom';
+import { Alert, AlertDescription, AlertTitle } from './ui/alert';
+import { Terminal } from 'lucide-react';
+import { IoWarning } from 'react-icons/io5';
 
 type Props = {
   brandsList: Brand[];
   categoriesList: Category[];
+  typeList: Types[];
 };
 
 export default function CreateProductForm({
   brandsList,
   categoriesList,
+  typeList,
 }: Props) {
-  const [state, action] = useFormState(createProductAction, { error: {} });
+  const [state, action] = useFormState(createProductAction, { errors: {} });
 
   const [previewImage, setPreviewImage] = useState<string | null>(null);
 
@@ -76,6 +81,14 @@ export default function CreateProductForm({
 
   return (
     <Form action={action}>
+      {state?.message && (
+        <Alert variant={'destructive'} className='mb-6'>
+          <IoWarning className='h-4 w-4' />
+          <AlertTitle>Error:</AlertTitle>
+          <AlertDescription>{state?.message}</AlertDescription>
+        </Alert>
+      )}
+
       <div className='form-group'>
         <Label htmlFor='image'>Foto</Label>
 
@@ -93,8 +106,8 @@ export default function CreateProductForm({
           <Input type='file' name='image' onChange={onImageChange} />
         </div>
 
-        {state?.error?.image && (
-          <p className='text-red-500 text-sm'>{state.error.image}</p>
+        {state?.errors?.image && (
+          <p className='text-red-500 text-sm'>{state.errors.image}</p>
         )}
       </div>
 
@@ -110,8 +123,8 @@ export default function CreateProductForm({
             placeholder='Masukkan nama produk'
           />
 
-          {state?.error?.name && (
-            <p className='text-red-500 text-sm'>{state.error.name}</p>
+          {state?.errors?.name && (
+            <p className='text-red-500 text-sm'>{state.errors.name}</p>
           )}
         </div>
 
@@ -124,8 +137,8 @@ export default function CreateProductForm({
             placeholder='Masukkan kode SKU'
           />
 
-          {state?.error?.sku && (
-            <p className='text-red-500 text-sm'>{state.error.sku}</p>
+          {state?.errors?.sku && (
+            <p className='text-red-500 text-sm'>{state.errors.sku}</p>
           )}
         </div>
       </div>
@@ -137,7 +150,7 @@ export default function CreateProductForm({
 
         <Select name='brand'>
           <SelectTrigger className='w-full'>
-            <SelectValue placeholder='Pilih brand' />
+            <SelectValue placeholder='Pilih merek' />
           </SelectTrigger>
           <SelectContent>
             {brandsList.length ? (
@@ -148,28 +161,40 @@ export default function CreateProductForm({
               ))
             ) : (
               <SelectItem disabled value='-1'>
-                Tidak ada brand
+                Tidak ada merek
               </SelectItem>
             )}
           </SelectContent>
         </Select>
 
-        {state?.error?.brand && (
-          <p className='text-red-500 text-sm'>{state.error.brand}</p>
+        {state?.errors?.brand && (
+          <p className='text-red-500 text-sm'>{state.errors.brand}</p>
         )}
       </div>
 
       <div className='form-group'>
         <Label htmlFor='type'>Tipe</Label>
-        <Input
-          type='text'
-          id='type'
-          name='type'
-          placeholder='Masukkan tipe produk'
-        />
+        <Select name='type'>
+          <SelectTrigger className='w-full'>
+            <SelectValue placeholder='Pilih tipe' />
+          </SelectTrigger>
+          <SelectContent>
+            {typeList.length ? (
+              typeList.map((type) => (
+                <SelectItem key={type.id} value={String(type.id)}>
+                  {type.name}
+                </SelectItem>
+              ))
+            ) : (
+              <SelectItem disabled value='-1'>
+                Tidak ada tipe
+              </SelectItem>
+            )}
+          </SelectContent>
+        </Select>
 
-        {state?.error?.type && (
-          <p className='text-red-500 text-sm'>{state.error.type}</p>
+        {state?.errors?.type && (
+          <p className='text-red-500 text-sm'>{state.errors.type}</p>
         )}
       </div>
 
@@ -187,8 +212,8 @@ export default function CreateProductForm({
             onChange={onChangePrice}
           />
 
-          {state?.error?.salePrice && (
-            <p className='text-red-500 text-sm'>{state.error.salePrice}</p>
+          {state?.errors?.salePrice && (
+            <p className='text-red-500 text-sm'>{state.errors.salePrice}</p>
           )}
         </div>
 
@@ -205,8 +230,8 @@ export default function CreateProductForm({
             onChange={onChangePrice}
           />
 
-          {state?.error?.supplierPrice && (
-            <p className='text-red-500 text-sm'>{state.error.supplierPrice}</p>
+          {state?.errors?.supplierPrice && (
+            <p className='text-red-500 text-sm'>{state.errors.supplierPrice}</p>
           )}
         </div>
 
@@ -223,8 +248,10 @@ export default function CreateProductForm({
             onChange={onChangePrice}
           />
 
-          {state?.error?.wholesalePrice && (
-            <p className='text-red-500 text-sm'>{state.error.wholesalePrice}</p>
+          {state?.errors?.wholesalePrice && (
+            <p className='text-red-500 text-sm'>
+              {state.errors.wholesalePrice}
+            </p>
           )}
         </div>
 
@@ -241,8 +268,8 @@ export default function CreateProductForm({
             onChange={onChangePrice}
           />
 
-          {state?.error?.retailPrice && (
-            <p className='text-red-500 text-sm'>{state.error.retailPrice}</p>
+          {state?.errors?.retailPrice && (
+            <p className='text-red-500 text-sm'>{state.errors.retailPrice}</p>
           )}
         </div>
       </div>
@@ -260,8 +287,8 @@ export default function CreateProductForm({
           onChange={onChangePrice}
         />
 
-        {state?.error?.workshopPrice && (
-          <p className='text-red-500 text-sm'>{state.error.workshopPrice}</p>
+        {state?.errors?.workshopPrice && (
+          <p className='text-red-500 text-sm'>{state.errors.workshopPrice}</p>
         )}
       </div>
       <div className='form-group'>
@@ -287,8 +314,8 @@ export default function CreateProductForm({
         />
         <input type='hidden' name='categories' value={categoryValue} />
 
-        {state?.error?.categories && (
-          <p className='text-red-500 text-sm'>{state.error.categories}</p>
+        {state?.errors?.categories && (
+          <p className='text-red-500 text-sm'>{state.errors.categories}</p>
         )}
       </div>
 
@@ -300,8 +327,8 @@ export default function CreateProductForm({
           placeholder='Masukkan keterangan produk'
         />
 
-        {state?.error?.description && (
-          <p className='text-red-500 text-sm'>{state.error.description}</p>
+        {state?.errors?.description && (
+          <p className='text-red-500 text-sm'>{state.errors.description}</p>
         )}
       </div>
 

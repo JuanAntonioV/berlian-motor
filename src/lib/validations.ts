@@ -212,6 +212,17 @@ export const brandSchema = z.object({
     .max(255, 'Nama maksimal 255 karakter'),
 });
 
+export const typesSchema = z.object({
+  name: z
+    .string({
+      required_error: 'Nama wajib diisi',
+      invalid_type_error: 'Nama tidak valid',
+      message: 'Nama tidak valid',
+    })
+    .min(1, 'Nama tidak boleh kosong')
+    .max(255, 'Nama maksimal 255 karakter'),
+});
+
 export const shelfSchema = z.object({
   image: z
     .instanceof(File, {
@@ -292,8 +303,8 @@ export const productSchema = z.object({
     })
     .optional()
     .nullable(),
-  type: z
-    .string({
+  type: z.coerce
+    .number({
       required_error: 'Tipe wajib diisi',
       invalid_type_error: 'Tipe tidak valid',
       message: 'Tipe tidak valid',

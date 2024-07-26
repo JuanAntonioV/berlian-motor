@@ -39,7 +39,7 @@ export async function createProductAction(prevState: any, formData: FormData) {
   });
 
   if (!validate.success) {
-    return { error: validate.error.flatten().fieldErrors };
+    return { errors: validate.error.flatten().fieldErrors };
   }
 
   if (!sku) {
@@ -62,17 +62,13 @@ export async function createProductAction(prevState: any, formData: FormData) {
 
     if (isNameExist) {
       return {
-        error: {
-          name: 'Produk sudah terdaftar',
-        },
+        message: 'Produk sudah terdaftar',
       };
     }
 
     if (isSkuExist) {
       return {
-        error: {
-          sku: 'SKU sudah terdaftar',
-        },
+        message: 'SKU sudah terdaftar',
       };
     }
 
@@ -81,7 +77,7 @@ export async function createProductAction(prevState: any, formData: FormData) {
         name,
         description,
         sku,
-        type,
+        typeId: parseInt(type),
         salePrice: parseRupiah(salePrice),
         supplierPrice: parseRupiah(supplierPrice),
         wholesalePrice: parseRupiah(wholesalePrice),
@@ -182,7 +178,7 @@ export async function updateProductAction(prevState: any, formData: FormData) {
         name,
         description,
         // sku,
-        type,
+        typeId: parseInt(type),
         salePrice: parseRupiah(salePrice),
         supplierPrice: parseRupiah(supplierPrice),
         wholesalePrice: parseRupiah(wholesalePrice),

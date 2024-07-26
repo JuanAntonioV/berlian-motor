@@ -12,7 +12,6 @@ import {
 import { Fragment, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { menus } from '@/config/appMenu';
-import { useSession } from 'next-auth/react';
 import { User } from 'next-auth';
 
 type Props = {

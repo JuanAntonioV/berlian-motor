@@ -13,6 +13,7 @@ import { getProductById, getProductStocks } from '@/getters/productGetter';
 import { CgTrash } from 'react-icons/cg';
 import { productStockColumns } from '../columns';
 import { auth } from '@/lib/auth';
+import { getTypesList } from '@/getters/typeGetter';
 
 export default async function EditProductPage({
   params,
@@ -23,6 +24,7 @@ export default async function EditProductPage({
   const brandsList = await getBrandsList();
   const categoriesList = await getCategoriesList();
   const productStocks = await getProductStocks(String(id));
+  const typeList = await getTypesList();
 
   const data = await getProductById(String(id));
 
@@ -53,6 +55,7 @@ export default async function EditProductPage({
           </SectionHeader>
 
           <EditProductForm
+            typeList={typeList}
             brandsList={brandsList}
             categoriesList={categoriesList}
             data={data}

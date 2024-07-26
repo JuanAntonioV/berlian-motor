@@ -188,7 +188,7 @@ model Product {
     brandId        Int      @map("brand_id")
     name           String   @unique
     sku            String   @unique
-    type           String
+    typeId         Int      @map("type_id")
     description    String?
     image          String?
     salePrice      BigInt   @map("sale_price")
@@ -200,6 +200,7 @@ model Product {
     updatedAt      DateTime @updatedAt @map("updated_at")
 
     Brand            Brand              @relation(fields: [brandId], references: [id])
+    Types            Types              @relation(fields: [typeId], references: [id])
     Category         Category[]
     Shelf            Shelf[]
     ProductStock     ProductStock[]
@@ -209,6 +210,17 @@ model Product {
     ReductionOfGoods ReductionOfGoods[]
 
     @@map("products")
+}
+
+model Types {
+    id        Int      @id @default(autoincrement())
+    name      String   @unique
+    createdAt DateTime @default(now()) @map("created_at")
+    updatedAt DateTime @updatedAt @map("updated_at")
+
+    Product Product[]
+
+    @@map("types")
 }
 
 model ProductStock {

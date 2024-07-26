@@ -3,10 +3,12 @@ import PageTitle from '@/components/PageTitle';
 import Section from '@/components/Section';
 import { getBrandsList } from '@/getters/brandGetter';
 import { getCategoriesList } from '@/getters/categoryGetter';
+import { getTypesList } from '@/getters/typeGetter';
 
 export default async function CreateProductPage() {
   const brandsList = await getBrandsList();
   const categoriesList = await getCategoriesList();
+  const typeList = await getTypesList();
 
   return (
     <div>
@@ -19,6 +21,7 @@ export default async function CreateProductPage() {
         <CreateProductForm
           brandsList={brandsList}
           categoriesList={categoriesList}
+          typeList={typeList}
         />
       </Section>
     </div>

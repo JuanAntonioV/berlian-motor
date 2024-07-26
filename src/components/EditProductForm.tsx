@@ -1,6 +1,6 @@
 'use client';
 
-import { Brand, Category, Prisma, Product } from '@prisma/client';
+import { Brand, Category, Prisma, Product, Types } from '@prisma/client';
 import Form from './Form';
 import { Label } from './ui/label';
 import { Input } from './ui/input';
@@ -22,6 +22,7 @@ import SubmitButton from './SubmitButtom';
 type Props = {
   brandsList: Brand[];
   categoriesList: Category[];
+  typeList: Types[];
   roleId: number;
   data: Prisma.ProductGetPayload<{
     include: {
@@ -36,6 +37,7 @@ export default function EditProductForm({
   categoriesList,
   data,
   roleId,
+  typeList,
 }: Props) {
   const [state, action] = useFormState(updateProductAction, { error: {} });
 
@@ -58,11 +60,11 @@ export default function EditProductForm({
     }
 
     setPrice({
-      salePrice: formatInputRupiah(data.salePrice),
-      supplierPrice: formatInputRupiah(data.supplierPrice),
-      wholesalePrice: formatInputRupiah(data.wholesalePrice),
-      retailPrice: formatInputRupiah(data.retailPrice),
-      workshopPrice: formatInputRupiah(data.workshopPrice),
+      salePrice: formatInputRupiah(Number(String(data.salePrice))),
+      supplierPrice: formatInputRupiah(Number(String(data.supplierPrice))),
+      wholesalePrice: formatInputRupiah(Number(String(data.wholesalePrice))),
+      retailPrice: formatInputRupiah(Number(String(data.retailPrice))),
+      workshopPrice: formatInputRupiah(Number(String(data.workshopPrice))),
     });
 
     const categories = data.Category.map((category) => category.id);
@@ -201,14 +203,28 @@ export default function EditProductForm({
 
       <div className='form-group'>
         <Label htmlFor='type'>Tipe</Label>
-        <Input
-          type='text'
-          id='type'
+        <Select
           name='type'
+          defaultValue={String(data.typeId)}
           disabled={roleId === 3}
-          defaultValue={data.type}
-          placeholder='Masukkan tipe produk'
-        />
+        >
+          <SelectTrigger className='w-full'>
+            <SelectValue placeholder='Pilih tipe' />
+          </SelectTrigger>
+          <SelectContent>
+            {typeList.length ? (
+              typeList.map((type) => (
+                <SelectItem key={type.id} value={String(type.id)}>
+                  {type.name}
+                </SelectItem>
+              ))
+            ) : (
+              <SelectItem disabled value='-1'>
+                Tidak ada tipe
+              </SelectItem>
+            )}
+          </SelectContent>
+        </Select>
 
         {state?.error?.type && (
           <p className='text-red-500 text-sm'>{state.error.type}</p>
