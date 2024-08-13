@@ -266,6 +266,66 @@ export async function deleteProductAction(prevState: any, formData: FormData) {
       };
     }
 
+    const goods = await db.goodsReceipt.findFirst({
+      where: {
+        productId: parseInt(id),
+      },
+    });
+
+    if (goods) {
+      return {
+        error: {
+          message:
+            'Produk tidak bisa dihapus karena masih memiliki transaksi barang masuk',
+        },
+      };
+    }
+
+    const reductionGoods = await db.reductionOfGoods.findFirst({
+      where: {
+        productId: parseInt(id),
+      },
+    });
+
+    if (reductionGoods) {
+      return {
+        error: {
+          message:
+            'Produk tidak bisa dihapus karena masih memiliki transaksi pengurangan barang',
+        },
+      };
+    }
+
+    const transferGoods = await db.transfer.findFirst({
+      where: {
+        productId: parseInt(id),
+      },
+    });
+
+    if (transferGoods) {
+      return {
+        error: {
+          message:
+            'Produk tidak bisa dihapus karena masih memiliki transaksi transfer barang',
+        },
+      };
+    }
+
+    const stockAdjustment = await db.stockAdjustment.findFirst({
+      where: {
+        productId: parseInt(id),
+      },
+    });
+
+    if (stockAdjustment) {
+      return {
+        error: {
+          message:
+            'Produk tidak bisa dihapus karena masih memiliki transaksi penyesuaian stok',
+        },
+      };
+    }
+
     await db.product.delete({
       where: {
         id: parseInt(id),

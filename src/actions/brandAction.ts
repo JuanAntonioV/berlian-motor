@@ -114,6 +114,20 @@ export async function deleteBrandAction(prevState: any, formData: FormData) {
       redirect('/not-found');
     }
 
+    const product = await db.product.findFirst({
+      where: {
+        brandId: parseInt(id),
+      },
+    });
+
+    if (product) {
+      return {
+        error: {
+          message: 'Kategori masih digunakan pada beberapa produk',
+        },
+      };
+    }
+
     await db.brand.delete({
       where: {
         id: parseInt(id),

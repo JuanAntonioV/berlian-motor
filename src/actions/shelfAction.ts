@@ -180,6 +180,62 @@ export async function deleteShelfAction(prevState: any, formData: FormData) {
       redirect('/not-found');
     }
 
+    const productStock = await db.productStock.findMany({
+      where: {
+        shelfId: parseInt(id),
+      },
+    });
+
+    if (productStock.length > 0) {
+      return {
+        error: {
+          message: 'Rak masih memiliki stok produk',
+        },
+      };
+    }
+
+    const reductionGoods = await db.reductionOfGoods.findMany({
+      where: {
+        shelfId: parseInt(id),
+      },
+    });
+
+    if (reductionGoods.length > 0) {
+      return {
+        error: {
+          message: 'Rak masih memiliki stok barang keluar',
+        },
+      };
+    }
+
+    const transferGoods = await db.transfer.findMany({
+      where: {
+        shelfId: parseInt(id),
+      },
+    });
+
+    if (transferGoods.length > 0) {
+      return {
+        error: {
+          message: 'Rak masih memiliki stok barang pindah',
+        },
+      };
+    }
+
+    const stockAdjustment = await db.stockAdjustment.findMany({
+      where: {
+        shelfId: parseInt(id),
+      },
+    });
+
+    if (stockAdjustment.length > 0) {
+      return {
+        error: {
+          message: 'Rak masih memiliki stok barang',
+        },
+      };
+    }
+
     await db.shelf.delete({
       where: {
         id: parseInt(id),

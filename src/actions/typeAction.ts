@@ -114,6 +114,20 @@ export async function deleteTypesAction(prevState: any, formData: FormData) {
       redirect('/not-found');
     }
 
+    const products = await db.product.findMany({
+      where: {
+        typeId: parseInt(id),
+      },
+    });
+
+    if (products.length > 0) {
+      return {
+        error: {
+          message: 'Tipe tidak bisa dihapus karena masih digunakan',
+        },
+      };
+    }
+
     await db.types.delete({
       where: {
         id: parseInt(id),

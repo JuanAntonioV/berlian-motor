@@ -114,6 +114,24 @@ export async function deleteCategoryAction(prevState: any, formData: FormData) {
       redirect('/not-found');
     }
 
+    const products = await db.product.findMany({
+      where: {
+        Category: {
+          some: {
+            id: parseInt(id),
+          },
+        },
+      },
+    });
+
+    if (products.length > 0) {
+      return {
+        error: {
+          message: 'Kategori tidak bisa dihapus karena masih digunakan',
+        },
+      };
+    }
+
     await db.category.delete({
       where: {
         id: parseInt(id),
