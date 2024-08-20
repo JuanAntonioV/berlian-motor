@@ -41,11 +41,9 @@ export async function loginAction(prevState: any, formData: FormData) {
 
 export async function logoutAction(formData: FormData) {
   await signOut({
-    redirect: false,
-    // redirectTo: '/auth/login',
+    redirect: true,
+    redirectTo: '/auth',
   });
-
-  redirect('/auth/login');
 }
 
 export async function changePasswordAction(prevState: any, formData: FormData) {
