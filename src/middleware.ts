@@ -31,6 +31,7 @@ async function middleware(req: any) {
 
   if (!user && isProtectedRoute) {
     const absoluteURL = new URL('/auth/login', nextUrl.origin);
+    console.log('🚀 ~ middleware ~ absoluteURL:', absoluteURL);
     return NextResponse.rewrite(absoluteURL.toString());
   }
   if (user && unprotectedRoutes.includes(nextUrl.pathname)) {

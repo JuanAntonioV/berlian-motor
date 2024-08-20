@@ -42,7 +42,7 @@ export async function loginAction(prevState: any, formData: FormData) {
 export async function logoutAction(formData: FormData) {
   await signOut({
     redirect: true,
-    redirectTo: '/auth',
+    redirectTo: '/auth/login',
   });
 }
 
