@@ -39,13 +39,13 @@ export async function loginAction(prevState: any, formData: FormData) {
   }
 }
 
-export async function logoutAction(formData: FormData) {
+export async function logoutAction(prevState: any, formData: FormData) {
   await signOut({
     redirect: false,
     // redirectTo: '/auth/login',
   });
 
-  redirect('/');
+  return { success: true };
 }
 
 export async function changePasswordAction(prevState: any, formData: FormData) {
