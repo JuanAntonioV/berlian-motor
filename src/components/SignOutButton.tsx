@@ -17,7 +17,7 @@ export default function SignOutButton({ className, ...props }: Props) {
   useEffect(() => {
     if (state.success) {
       toast.success('Berhasil masuk');
-      router.push('/dashboard');
+      router.push('/auth/login');
     }
   }, [state]);
 
